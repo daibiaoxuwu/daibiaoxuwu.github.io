@@ -35,7 +35,7 @@ window.addEventListener('devicemotion', function(event) {
     {
         collects++;
         alert("collect finish");
-        var norm_gain=4002/Math.pow(2,16);
+        var norm_gain=0.07;
         var maxdiff=norm_gain*5;
         var data_diff=[];
         var data_diff_2=[];
@@ -76,7 +76,7 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-            alert("diff2:"+data_diff_2.length);
+            alert("diff2v3:"+data_diff_2.length);
 
             var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
             var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
