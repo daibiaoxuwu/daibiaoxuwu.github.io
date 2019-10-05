@@ -36,17 +36,15 @@ window.addEventListener('devicemotion', function(event) {
         output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
 
         sens_list += output.innerHTML;
-
+/*
         temp={alpha:0,beta:0,gamma:0};
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
-            {
                 temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
-                console.log(temp[names[i1]],event.rotationRate[names[i2]],cal_matrix[i1][i2]);
-            }
 
         data.push(temp)
-
+*/
+        data.push(event.rotationRate);
         collects++;
     }
     else if(collects==maxi)
