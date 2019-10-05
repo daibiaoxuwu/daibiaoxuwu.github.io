@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>JavaScript Hello World Example</title>
+    </head>
+    <script>
+        function handleOrientation(event) {
+            var absolute = event.absolute;
+            var alpha    = event.alpha;
+            var beta     = event.beta;
+            var gamma    = event.gamma;
+            document.write(absolute);
+            // Do stuff with the new orientation data
+        }
+    </script>
+    <body>
+        <script>
+            document.write("<h1>123abc</h1>");
+window.addEventListener("deviceorientation", handleOrientation, true);
+        </script>
+
+    </body>
+</html>
