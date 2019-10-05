@@ -6,18 +6,27 @@
     </head>
     <body>
         <pre class="output">123</pre>
+        <pre class="output2">234</pre>
         <script>
             var output = document.querySelector('.output');
+            var output2 = document.querySelector('.output');
             window.addEventListener("deviceorientation", 
                 function (event) {
                     var alpha    = event.alpha;
                     var beta     = event.beta;
                     var gamma    = event.gamma;
                     //document.write(alpha);
-                    output.innerHTML="beta: " + beta;
-                    console.log("123");
+                    output2.innerHTML="beta: " + beta;
                     // Do stuff with the new orientation data
                 },false);
+            window.addEventListener('devicemotion', function(event) {
+                output.innerHTML ="accx:" + event.acceleration.x + ' m/s2\n';
+                output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
+                output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
+                output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
+                output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
+                output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
+            });
         </script>
 
     </body>
