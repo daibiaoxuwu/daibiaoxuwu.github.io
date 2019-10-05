@@ -19,13 +19,20 @@
                     output2.innerHTML="beta: " + beta;
                     // Do stuff with the new orientation data
                 },false);
+            var sens_list=[]
             window.addEventListener('devicemotion', function(event) {
+                if(sens_list.length<1000){
                 output.innerHTML ="accx:" + event.acceleration.x + ' m/s2\n';
                 output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
                 output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
                 output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
                 output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
                 output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
+
+                sens_list += output.innerHTML;
+                }
+                else
+                    output.innerHTML=sens_list;
             });
         </script>
 
