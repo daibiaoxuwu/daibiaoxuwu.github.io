@@ -30,9 +30,10 @@ window.addEventListener('devicemotion', function(event) {
         data.push(event.rotationRate);
         collects++;
     }
-    else
+    else if(collects==maxi)
     {
-            alert("collect finish");
+        collects++;
+        alert("collect finish");
         var norm_gain=4002/Math.pow(2,16);
         var maxdiff=norm_gain*5;
         var data_diff=[];
