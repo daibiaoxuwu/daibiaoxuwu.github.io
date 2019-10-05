@@ -19,6 +19,9 @@ var maxi=100;
 var data_diff=[];
 var data_diff_2=[];
 var data_diff_3=[];
+var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
+var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
+var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 
 window.addEventListener('devicemotion', function(event) {
     if(collects<maxi){
@@ -72,11 +75,8 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-            alert("diff2v3:"+data_diff_2.length);
+            alert("diff2v4:"+data_diff_2.length);
 
-            var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
-            var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
-            var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
             for(var i=0; i<data_diff_2.length;++i)
             {
                 var names=['alpha','beta','gamma'];
