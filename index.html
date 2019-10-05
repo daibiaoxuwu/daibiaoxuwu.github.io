@@ -16,6 +16,9 @@ var sens_list="";
 var data=[];
 var collects=0;
 var maxi=100;
+var data_diff=[];
+var data_diff_2=[];
+var data_diff_3=[];
 
 window.addEventListener('devicemotion', function(event) {
     if(collects<maxi){
@@ -37,9 +40,6 @@ window.addEventListener('devicemotion', function(event) {
         alert("collect finish");
         var norm_gain=0.07;
         var maxdiff=norm_gain*5;
-        var data_diff=[];
-        var data_diff_2=[];
-        var data_diff_3=[];
         for(var i=0;i<maxi-1;++i)
             for(var j=i+1;j<maxi;++j)
             {
