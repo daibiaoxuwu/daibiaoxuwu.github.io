@@ -4,22 +4,22 @@
         <meta charset="UTF-8">
         <title>JavaScript Hello World Example</title>
     </head>
-    <script>
-        function handleOrientation(event) {
-            var absolute = event.absolute;
-            var alpha    = event.alpha;
-            var beta     = event.beta;
-            var gamma    = event.gamma;
-            document.write("<h1>abs: "+absolute + "alpha: "+alpha+"beta: "+beta+"gamma: "+gamma+"</h1>");
-            console.log(event);
-            // Do stuff with the new orientation data
-        }
-    </script>
     <body>
         <script>
-            document.write("<h1>123abc</h1>");
+function handleOrientation(event) {
+  var x = event.beta;  // In degree in the range [-180,180]
+  var y = event.gamma; // In degree in the range [-90,90]
+var output = document.querySelector('.output');
+
+  output.innerHTML  = "beta : " + x + "\n";
+  output.innerHTML += "gamma: " + y + "\n";
+
+
+}
+
 window.addEventListener("deviceorientation", handleOrientation, true);
         </script>
+<pre class="output"></pre>
 
     </body>
 </html>
