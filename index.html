@@ -11,7 +11,7 @@
             var sens_list=""
             var i=0
             window.addEventListener('devicemotion', function(event) {
-                if(i<1000){
+                if(i<100){
                 output.innerHTML ="index:" + i + '\n';
                 output.innerHTML+="accx:" + event.acceleration.x + ' m/s2\n';
                 output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
