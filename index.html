@@ -56,7 +56,7 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
             };
-            alert("diff:"+data_diff.length());
+            alert("diff:"+data_diff.length);
         var max_round_error=0.2*norm_gain;
         data_diff.forEach(function(diff){
 
@@ -72,12 +72,12 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-            alert("diff2:"+data_diff_2.length());
+            alert("diff2:"+data_diff_2.length);
 
             var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
             var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
             var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
-            for(var i=0; i<data_diff_2.length();++i)
+            for(var i=0; i<data_diff_2.length;++i)
             {
                 var names=['alpha','beta','gamma'];
                 for(var i1=0;i1<3;++i1)
