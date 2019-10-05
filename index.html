@@ -63,8 +63,8 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
                 if(
-                    Math.abs(diff.alpha)<maxdiff && diff.alpha!=0
-                    Math.abs(diff.beta)<maxdiff && diff.beta!=0
+                    Math.abs(diff.alpha)<maxdiff && diff.alpha!=0 &&
+                    Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
                     Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
                 {
                     data_diff.push(diff);
