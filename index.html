@@ -1,26 +1,60 @@
-<!DOCTYPE html>
+
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>JavaScript Hello World Example</title>
     </head>
     <body>
+        <pre class="output">123</pre>
+        <ul id="test">
+            <li id="testli">item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+        </ul>
         <script>
-function handleOrientation(event) {
-  var x = event.beta;  // In degree in the range [-180,180]
-  var y = event.gamma; // In degree in the range [-90,90]
+            let test = document.getElementById("test");
+            let testli = document.getElementById("testli");
+
+// This handler will be executed only once when the cursor
+// moves over the unordered list
+test.addEventListener("mouseenter", function( event ) {   
+    // highlight the mouseenter target
+    event.target.style.color = "purple";
+
+    // reset the color after a short delay
+    setTimeout(function() {
+        event.target.style.color = "";
+    }, 500);
+}, false);
+
+// This handler will be executed every time the cursor
+// is moved over a different list item
+test.addEventListener("mouseover", function( event ) {   
+    // highlight the mouseover target
+    event.target.style.color = "orange";
+
+    // reset the color after a short delay
+    setTimeout(function() {
+        event.target.style.color = "";
+    }, 500);
+}, false);
+
+
 var output = document.querySelector('.output');
+window.addEventListener("deviceorientation", function( event ) {   
+    // highlight the mouseover target
+var x = event.beta;  // In degree in the range [-180,180]
+  var y = event.gamma; // In degree in the range [-90,90]
+   
+    console.log("123");
+    testli.style.color="orange";
+    setTimeout(function() {
+        testli.style.color = "";
+    }, 500);
 
-  output.innerHTML  = "beta : " + x + "\n";
-  output.innerHTML += "gamma: " + y + "\n";
-
-    console.log(x);
-
-}
-
-window.addEventListener("deviceorientation", handleOrientation);
+    output.innerHTML  = "beta : " + x + "\n";
+    output.innerHTML += "gamma: " + y + "\n";
+}, false);
         </script>
-<pre class="output"></pre>
-
     </body>
 </html>
