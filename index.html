@@ -193,6 +193,9 @@ window.addEventListener('devicemotion', function(event) {
             return I;
         }
         left_matrix_inverse = matrix_invert(left_matrix);
+        console.log(left_matrix_inverse);
+        console.log(left_matrix);
+        console.log(right_matrix);
 
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
@@ -202,6 +205,7 @@ window.addEventListener('devicemotion', function(event) {
             }
         for(var i1=0;i1<3;++i1)
                 result_matrix[i1][i1] -= 1;
+        console.log(result_matrix);
 
 
 
