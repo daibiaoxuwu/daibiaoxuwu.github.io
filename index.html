@@ -15,7 +15,7 @@
 var sens_list="";
 var data=[];
 var collects=0;
-var maxi=100;
+var maxi=1000;
 var data_diff=[];
 var data_diff_2=[];
 var data_diff_3=[];
@@ -25,14 +25,7 @@ var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 
 window.addEventListener('devicemotion', function(event) {
     if(collects<maxi){
-        output.innerHTML ="index:" + collects + '\n';
-        output.innerHTML+="accx:" + event.acceleration.x + ' m/s2\n';
-        output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
-        output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
-        output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
-        output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
-        output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
-
+    
         sens_list += output.innerHTML;
         data.push(event.rotationRate);
         collects++;
