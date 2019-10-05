@@ -1,4 +1,3 @@
-
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -7,18 +6,18 @@
     <body>
         <pre class="output">123</pre>
         <script>
-
-
-
-var output = document.querySelector('.output');
-window.addEventListener("deviceorientation", function( event ) {   
-    // highlight the mouseover target
-var x = event.beta;  // In degree in the range [-180,180]
-  var y = event.gamma; // In degree in the range [-90,90]
-   
-    output.innerHTML  = "beta : " + x + "\n";
-    output.innerHTML += "gamma: " + y + "\n";
-}, false);
+            var output = document.querySelector('.output');
+            window.addEventListener("deviceorientation", 
+                function (event) {
+                    var alpha    = event.alpha;
+                    var beta     = event.beta;
+                    var gamma    = event.gamma;
+                    //document.write(alpha);
+                    output.innerHTML+="beta: " + beta;
+                    console.log("123");
+                    // Do stuff with the new orientation data
+                },false);
         </script>
+
     </body>
 </html>
