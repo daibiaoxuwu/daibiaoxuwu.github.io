@@ -61,9 +61,11 @@ window.addEventListener('devicemotion', function(event) {
                     beta: data[i].beta - data[j].beta,
                     gamma: data[i].gamma - data[j].gamma
                 }
-                if(Math.abs(diff.alpha)<maxdiff &&
-                    Math.abs(diff.beta)<maxdiff &&
-                    Math.abs(diff.gamma)<maxdiff)
+
+                if(
+                    Math.abs(diff.alpha)<maxdiff && diff.alpha!=0
+                    Math.abs(diff.beta)<maxdiff && diff.beta!=0
+                    Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
                 {
                     data_diff.push(diff);
                 }
