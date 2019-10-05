@@ -6,12 +6,7 @@
     </head>
     <body>
         <pre class="output">123</pre>
-        <ul id="test">
-            <li id="testli">item 1</li>
-        </ul>
         <script>
-            let test = document.getElementById("test");
-            let testli = document.getElementById("testli");
 
 
 
@@ -21,12 +16,6 @@ window.addEventListener("deviceorientation", function( event ) {
 var x = event.beta;  // In degree in the range [-180,180]
   var y = event.gamma; // In degree in the range [-90,90]
    
-    console.log("123");
-    testli.style.color="orange";
-    setTimeout(function() {
-        testli.style.color = "";
-    }, 500);
-
     output.innerHTML  = "beta : " + x + "\n";
     output.innerHTML += "gamma: " + y + "\n";
 }, false);
