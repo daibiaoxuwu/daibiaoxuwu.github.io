@@ -6,27 +6,229 @@
     </head>
     <body>
         <pre class="output">123</pre>
+
+        <pre class="output">123</pre>
+
         <script>
             var output = document.querySelector('.output');
-            var sens_list=""
-            var i=0
-            window.addEventListener('devicemotion', function(event) {
-                if(i<100){
-                output.innerHTML ="index:" + i + '\n';
-                output.innerHTML+="accx:" + event.acceleration.x + ' m/s2\n';
-                output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
-                output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
-                output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
-                output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
-                output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
+var sens_list="";
+var data=[];
+var collects=0;
+var maxi=100;
 
-                sens_list += output.innerHTML;
-                i=i+1;
+window.addEventListener('devicemotion', function(event) {
+    if(collects<maxi){
+        output.innerHTML ="index:" + collects + '\n';
+        output.innerHTML+="accx:" + event.acceleration.x + ' m/s2\n';
+        output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
+        output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
+        output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
+        output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
+        output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
+
+        sens_list += output.innerHTML;
+        data.push(event.rotationRate);
+        collects++;
+    }
+    else
+    {
+        var norm_gain=4002/Math.pow(2,16);
+        var maxdiff=norm_gain*5;
+        var data_diff=[];
+        var data_diff_2=[];
+        var data_diff_3=[];
+        for(var i=0;i<maxi-1;++i)
+            for(var j=i+1;j<maxi;++j)
+            {
+                diff={
+                    alpha: data[i].alpha - data[j].alpha,
+                    beta: data[i].beta - data[j].beta,
+                    gamma: data[i].gamma - data[j].gamma
                 }
-                else
-                    output.innerHTML=sens_list;
-            });
+                if(Math.abs(diff[0])<maxdiff &&
+                    Math.abs(diff[1])<maxdiff &&
+                    Math.abs(diff[2])<maxdiff)
+                {
+                    data_diff.push(diff);
+                }
+
+            };
+            alert("diff:"+data_diff.length());
+        var max_round_error=0.2*norm_gain;
+        data_diff.forEach(function(diff){
+
+            diff2={alpha:Math.round(diff.alpha/norm_gain),
+                beta:Math.round(diff.beta/norm_gain),
+                gamma:Math.round(diff.gamma/norm_gain)
+            };
+            if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
+                Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
+                Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
+            {
+                data_diff_2.push(diff);
+                data_diff_3.push(diff2);
+            }
+        });
+            alert("diff2:"+data_diff_2.length());
+
+            var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
+            var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
+            var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
+            for(var i=0; i<data_diff_2.length();++i)
+            {
+                var names=['alpha','beta','gamma'];
+                for(var i1=0;i1<3;++i1)
+                    for(var i2=0;i2<3;++i2)
+                    {
+                        left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
+                        right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
+                    }
+            }
+
+        // Returns the inverse of matrix `M`.
+        function matrix_invert(M){
+            // I use Guassian Elimination to calculate the inverse:
+            // (1) 'augment' the matrix (left) by the identity (on the right)
+            // (2) Turn the matrix on the left into the identity by elemetry row ops
+            // (3) The matrix on the right is the inverse (was the identity matrix)
+            // There are 3 elemtary row ops: (I combine b and c in my code)
+            // (a) Swap 2 rows
+            // (b) Multiply a row by a scalar
+            // (c) Add 2 rows
+
+            //if the matrix isn't square: exit (error)
+            if(M.length !== M[0].length){return;}
+
+            //create the identity matrix (I), and a copy (C) of the original
+            var i=0, ii=0, j=0, dim=M.length, e=0, t=0;
+            var I = [], C = [];
+            for(i=0; i<dim; i+=1){
+                // Create the row
+                I[I.length]=[];
+                C[C.length]=[];
+                for(j=0; j<dim; j+=1){
+
+                    //if we're on the diagonal, put a 1 (for identity)
+                    if(i==j){ I[i][j] = 1; }
+                    else{ I[i][j] = 0; }
+
+                    // Also, make the copy of the original
+                    C[i][j] = M[i][j];
+                }
+            }
+
+            // Perform elementary row operations
+            for(i=0; i<dim; i+=1){
+                // get the element e on the diagonal
+                e = C[i][i];
+
+                // if we have a 0 on the diagonal (we'll need to swap with a lower row)
+                if(e==0){
+                    //look through every row below the i'th row
+                    for(ii=i+1; ii<dim; ii+=1){
+                        //if the ii'th row has a non-0 in the i'th col
+                        if(C[ii][i] != 0){
+                            //it would make the diagonal have a non-0 so swap it
+                            for(j=0; j<dim; j++){
+                                e = C[i][j];       //temp store i'th row
+                                C[i][j] = C[ii][j];//replace i'th row by ii'th
+                                C[ii][j] = e;      //repace ii'th by temp
+                                e = I[i][j];       //temp store i'th row
+                                I[i][j] = I[ii][j];//replace i'th row by ii'th
+                                I[ii][j] = e;      //repace ii'th by temp
+                            }
+                            //don't bother checking other rows since we've swapped
+                            break;
+                        }
+                    }
+                    //get the new diagonal
+                    e = C[i][i];
+                    //if it's still 0, not invertable (error)
+                    if(e==0){return}
+                }
+
+                // Scale this row down by e (so we have a 1 on the diagonal)
+                for(j=0; j<dim; j++){
+                    C[i][j] = C[i][j]/e; //apply to original matrix
+                    I[i][j] = I[i][j]/e; //apply to identity
+                }
+
+                // Subtract this row (scaled appropriately for each row) from ALL of
+                // the other rows so that there will be 0's in this column in the
+                // rows above and below this one
+                for(ii=0; ii<dim; ii++){
+                    // Only apply to other rows (we want a 1 on the diagonal)
+                    if(ii==i){
+                        continue;
+                    }
+
+                    // We want to change this element to 0
+                    e = C[ii][i];
+
+                    // Subtract (the row above(or below) scaled by e) from (the
+                    // current row) but start at the i'th column and assume all the
+                    // stuff left of diagonal is 0 (which it should be if we made this
+                    // algorithm correctly)
+                    for(j=0; j<dim; j++){
+                        C[ii][j] -= e*C[i][j]; //apply to original matrix
+                        I[ii][j] -= e*I[i][j]; //apply to identity
+                    }
+                }
+            }
+
+            //we've done all operations, C should be the identity
+            //matrix I should be the inverse:
+            return I;
+        }
+        left_matrix_inverse = matrix_invert(left_matrix);
+
+        for(var i1=0;i1<3;++i1)
+            for(var i2=0;i2<3;++i2)
+            {
+                result_matrix[i2][i1] += left_matrix[i1][i2]*right_matrix[i2][i1];
+            }
+
+
+
+        var body = document.getElementsByTagName("body")[0];
+
+        // creates a <table> element and a <tbody> element
+        var tbl = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+
+        // creating all cells
+        for (var i = 0; i < 3; i++) {
+            // creates a table row
+            var row = document.createElement("tr");
+
+            for (var j = 0; j < 3; j++) {
+                // Create a <td> element and a text node, make the text
+                // node the contents of the <td>, and put the <td> at
+                // the end of the table row
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode("cell in row "+i+", column "+j+" value:"+result_matrix[i][j]);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+            }
+
+            // add the row to the end of the table body
+            tblBody.appendChild(row);
+        }
+
+        // put the <tbody> in the <table>
+        tbl.appendChild(tblBody);
+        // appends <table> into <body>
+        body.appendChild(tbl);
+        // sets the border attribute of tbl to 2;
+        tbl.setAttribute("border", "2");
+
+
+    }
+})
+
+
+
         </script>
 
-    </body>
+            </body>
 </html>
