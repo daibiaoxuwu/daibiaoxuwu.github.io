@@ -187,8 +187,9 @@ window.addEventListener('devicemotion', function(event) {
 
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
+            for(var i3=0;i3<3;++i3)
             {
-                result_matrix[i2][i1] += left_matrix_inverse[i1][i2]*right_matrix[i2][i1];
+                result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
             }
 
 
