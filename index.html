@@ -64,7 +64,7 @@ var data_diff_3=[];
 var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
-var cal_matrix=[[1.006,0.01,0.005],[0.01,1.007,0.002],[0.005,0.002,1.008]]
+var cal_matrix=[[1.06,0.1,0.05],[0.1,1.07,0.02],[0.05,0.02,1.08]]
 var names=['alpha','beta','gamma'];
 
 window.addEventListener('devicemotion', function(event) {
@@ -78,15 +78,15 @@ window.addEventListener('devicemotion', function(event) {
         output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
 
         sens_list += output.innerHTML;
-        /*
+        
         temp={alpha:0,beta:0,gamma:0};
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
                 temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
 
         data.push(temp)
-         */
-        data.push(event.rotationRate);
+
+        //data.push(event.rotationRate);
         collects++;
     }
     else if(collects==maxi)
@@ -271,7 +271,7 @@ window.addEventListener('devicemotion', function(event) {
                 // node the contents of the <td>, and put the <td> at
                 // the end of the table row
                 var cell = document.createElement("td");
-                var cellText = document.createTextNode(result_matrix[i][j]);
+                var cellText = document.createTextNode(Math.round(result_matrix[i][j]/norm_gain));
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
