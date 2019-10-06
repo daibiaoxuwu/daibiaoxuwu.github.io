@@ -4,10 +4,14 @@
         <meta charset="UTF-8">
         <title>SensorID by daibiaoxuwu</title>
         <script>
-            function create_table(result_matrix){
+            function create_table(titleText,result_matrix){
                 var body = document.querySelector(".centered");
 
                 // creates a <table> element and a <tbody> element
+                var title = document.createTextNode(titleText);
+                body.appendChild(title);
+                
+
                 var tbl = document.createElement("table");
                 var tblBody = document.createElement("tbody");
 
@@ -21,7 +25,7 @@
                         // node the contents of the <td>, and put the <td> at
                         // the end of the table row
                         var cell = document.createElement("td");
-                        var cellText = document.createTextNode(result_matrix[i][j]*65536);
+                        var cellText = document.createTextNode(result_matrix[i][j]*65536*Math.PI/180);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
                     }
@@ -341,9 +345,10 @@ window.addEventListener('devicemotion', function(event) {
     result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
     }
 
-    create_table(left_matrix)
-    create_table(right_matrix)
-    create_table(result_matrix)
+    create_table("左矩",left_matrix)
+    create_table("左矩逆",left_matrix_inverse)
+    create_table("右矩",right_matrix)
+    create_table("指纹",result_matrix)
 
 
 
