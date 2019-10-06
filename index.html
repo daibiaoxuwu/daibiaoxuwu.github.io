@@ -154,7 +154,6 @@ function matrix_invert(M){
                 <h2>SensorID 论文复现</h2>
                 <p class="line1">正在探测传感器标定增益...</p>
                 <p class="output"></p>
-                <p class="line2"></p>
                 <p class="line3"></p>
                 <canvas id="myChart" width="400" height="400"></canvas>
             </div>
@@ -198,7 +197,7 @@ var output = document.querySelector('.output');
 var sens_list="";
 var data=[];
 var collects=0;
-var maxi=2000;
+var maxi=300;
 var data_diff=[];
 var data_diff_2=[];
 var data_diff_3=[];
@@ -230,12 +229,17 @@ window.addEventListener('devicemotion', function(event) {
 
         //data.push(event.rotationRate);
         collects++;
+ if(collects==maxi)
+        line1.innerHTML="采集完毕,正在绘图...";
     }
     else if(collects==maxi)
     {
         collects++;
         line1.innerHTML="采集完毕";
         fade2(line1);
+        document.querySelector('h2').style.display="none";
+        document.querySelector('.output').style.display="none";
+        
 
         var norm_gain=4000/65536;
         var maxdiff=norm_gain*5;
@@ -259,7 +263,7 @@ window.addEventListener('devicemotion', function(event) {
                     for(var i2=0;i2<3;++i2)
                     {
                         var tempi = Math.abs(diff[names[i2]]);
-                        if(chart_data.length<1000 && tempi < 0.15)
+                        if(chart_data.length<2000 && tempi < 0.15)
                             chart_data.push({x:chart_data.length,y:tempi});
                         if(Math.abs(tempi - norm_gain)<norm_gain/2)
                         {
@@ -276,10 +280,10 @@ window.addEventListener('devicemotion', function(event) {
             sum_gain[i2]/=sum_gain_count[i2];
 
 
-        document.querySelector('.line2').innerHTML="采集数据数量:"+data_diff.length;
+        document.querySelector('.line3').innerHTML="采集数据数量:"+data_diff.length;
         var norm_data_length=maxi*(maxi-1)/2;
         if(data_diff.length<norm_data_length/2)
-            document.querySelector('.line2').innerHTML+="\n数据数量不足,建议持稳手机.";
+            document.querySelector('.line3').innerHTML+="\n数据数量不足,建议持稳手机.";
 
 
         var max_round_error=0.05*(sum_gain[0]+sum_gain[1]+sum_gain[2]);
@@ -297,7 +301,7 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-        document.querySelector('.line3').innerHTML="有效数据数量: "+data_diff_2.length;
+        document.querySelector('.line3').innerHTML+="\n有效数据数量: "+data_diff_2.length;
         document.querySelector('.line3').innerHTML+="\nalpha增益: "+sum_gain[0];
         document.querySelector('.line3').innerHTML+="\nbeta增益: "+sum_gain[1];
         document.querySelector('.line3').innerHTML+="\ngamma增益: "+sum_gain[2];
