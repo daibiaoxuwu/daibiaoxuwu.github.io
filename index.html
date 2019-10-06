@@ -217,13 +217,13 @@ window.addEventListener('devicemotion', function(event) {
                     Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
                 {
                     data_diff.push(diff);
+                    var i = Math.abs(diff.alpha);if(i!=0){
+                        if(i<=min1)min1=i;
+                        else if(i<=min1*1.5)min2=i;
+                        else if(i<min3) min3=i;
+                    }
                 }
 
-                var i = Math.abs(diff.alpha);if(i!=0){
-                    if(i<=min1)min1=i;
-                    else if(i<=min1*1.5)min2=i;
-                    else if(i<min3) min3=i;
-                }
             };
 
         document.querySelector('.line2').innerHTML="最小分度:"+min1*Math.pow(2,33);
