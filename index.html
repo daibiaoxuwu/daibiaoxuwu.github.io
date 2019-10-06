@@ -237,8 +237,8 @@ window.addEventListener('devicemotion', function(event) {
         collects++;
         line1.innerHTML="采集完毕";
         fade2(line1);
-        document.querySelector('h2').style.display="none";
-        document.querySelector('.output').style.display="none";
+//        document.querySelector('h2').style.display="none";
+//        document.querySelector('.output').style.display="none";
         
 
         var norm_gain=4000/65536;
@@ -353,6 +353,7 @@ window.addEventListener('devicemotion', function(event) {
     create_table("左矩",left_matrix)
     create_table("左矩逆",left_matrix_inverse)
     create_table("右矩",right_matrix)
+    window.scrollTo(0,document.body.scrollHeight);
 
 
 
