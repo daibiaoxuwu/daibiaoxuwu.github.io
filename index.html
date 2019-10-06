@@ -212,15 +212,14 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
                 if(
-                    Math.abs(diff.alpha)<maxdiff && diff.alpha!=0 &&
-                    Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
-                    Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
+                    Math.abs(diff.alpha)<maxdiff && Math.abs(diff.alpha)>1e-4 &&
+                    Math.abs(diff.beta)<maxdiff &&  Math.abs(diff.beta)>1e-4 &&
+                    Math.abs(diff.gamma)<maxdiff &&  Math.abs(diff.gamma)>1e-4 &&
                 {
-                    var tempi = Math.abs(diff.alpha);if(tempi!=0){
-                        if(tempi<=min1)min1=tempi;
-                        else if(tempi<=min1*1.5)min2=tempi;
-                        else if(tempi<min3) min3=tempi;
-                    }
+                    var tempi = Math.abs(diff.alpha);
+                    if(tempi<=min1)min1=tempi;
+                    else if(tempi<=min1*1.5)min2=tempi;
+                    else if(tempi<min3) min3=tempi;
                     data_diff.push(diff);
                 }
 
