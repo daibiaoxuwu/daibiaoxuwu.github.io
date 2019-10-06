@@ -3,15 +3,64 @@
     <head>
         <meta charset="UTF-8">
         <title>JavaScript Hello World Example</title>
+        <style type="text/css">
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.is-hidden {
+    display: none;
+}
+        </style>
     </head>
     <body>
         <pre class="output">123</pre>
+        <div class="centered is-hidden">请持稳手机...</div>
 
-        <pre class="output">123</pre>
 
-            <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
-        <script>
-            var output = document.querySelector('.output');
+
+        <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
+    <script>
+        // fade out
+
+function fadeOut(el){
+  el.style.opacity = 1;
+
+  (function fade() {
+    if ((el.style.opacity -= .1) < 0) {
+      el.style.display = 'none';
+      el.classList.add('is-hidden');
+    } else {
+      requestAnimationFrame(fade);
+    }
+  })();
+}
+
+// fade in
+
+function fadeIn(el, display){
+  if (el.classList.contains('is-hidden')){
+    el.classList.remove('is-hidden');
+  }
+  el.style.opacity = 0;
+  el.style.display = display || "block";
+
+  (function fade() {
+    var val = parseFloat(el.style.opacity);
+    if (!((val += .1) > 1)) {
+      el.style.opacity = val;
+      requestAnimationFrame(fade);
+    }
+  })();
+}
+
+        var centered = document.querySelector('.centered');             
+fadeIn(centered);
+fadeOut(centered);
+
+var output = document.querySelector('.output');
 var sens_list="";
 var data=[];
 var collects=0;
@@ -36,14 +85,14 @@ window.addEventListener('devicemotion', function(event) {
         output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
 
         sens_list += output.innerHTML;
-/*
+        /*
         temp={alpha:0,beta:0,gamma:0};
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
                 temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
 
         data.push(temp)
-*/
+         */
         data.push(event.rotationRate);
         collects++;
     }
@@ -71,7 +120,7 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
             };
-            alert("diff:"+data_diff.length);
+        alert("diff:"+data_diff.length);
         var max_round_error=0.2*norm_gain;
         data_diff.forEach(function(diff){
 
@@ -87,17 +136,17 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-            alert("diff2v4:"+data_diff_2.length);
+        alert("diff2v4:"+data_diff_2.length);
 
-            for(var i=0; i<data_diff_2.length;++i)
-            {
-                for(var i1=0;i1<3;++i1)
-                    for(var i2=0;i2<3;++i2)
-                    {
-                        left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
-                        right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
-                    }
-            }
+        for(var i=0; i<data_diff_2.length;++i)
+        {
+            for(var i1=0;i1<3;++i1)
+                for(var i2=0;i2<3;++i2)
+                {
+                    left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
+                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
+                }
+        }
 
         // Returns the inverse of matrix `M`.
         function matrix_invert(M){
@@ -201,12 +250,12 @@ window.addEventListener('devicemotion', function(event) {
 
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
-            for(var i3=0;i3<3;++i3)
-            {
-                result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
-            }
+                for(var i3=0;i3<3;++i3)
+                {
+                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2]/norm_gain;
+                }
         for(var i1=0;i1<3;++i1)
-                result_matrix[i1][i1] -= 1;
+            result_matrix[i1][i1] -= 1;
         console.log(result_matrix);
 
 
@@ -250,7 +299,7 @@ window.addEventListener('devicemotion', function(event) {
 
 
 
-        </script>
+    </script>
 
             </body>
 </html>
