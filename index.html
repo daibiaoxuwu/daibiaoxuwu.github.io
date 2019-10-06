@@ -103,6 +103,8 @@
 .centered {
     margin: 20%;
     text-align: center;
+    white-space:pre;
+
 }
               .is-hidden {
                   display: none;
@@ -258,7 +260,7 @@ window.addEventListener('devicemotion', function(event) {
 
 
 
-        var body = document.getElementsByTagName("body")[0];
+        var body = document.querySelector("centered");
 
         // creates a <table> element and a <tbody> element
         var tbl = document.createElement("table");
