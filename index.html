@@ -78,15 +78,15 @@ window.addEventListener('devicemotion', function(event) {
         output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
 
         sens_list += output.innerHTML;
-        /*
+        
         temp={alpha:0,beta:0,gamma:0};
         for(var i1=0;i1<3;++i1)
             for(var i2=0;i2<3;++i2)
                 temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
 
         data.push(temp)
-         */
-        data.push(event.rotationRate);
+        
+        //data.push(event.rotationRate);
         collects++;
     }
     else if(collects==maxi)
@@ -246,7 +246,7 @@ window.addEventListener('devicemotion', function(event) {
             for(var i2=0;i2<3;++i2)
                 for(var i3=0;i3<3;++i3)
                 {
-                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2]/norm_gain;
+                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
                 }
         for(var i1=0;i1<3;++i1)
             result_matrix[i1][i1] -= 1;
@@ -286,6 +286,25 @@ window.addEventListener('devicemotion', function(event) {
         body.appendChild(tbl);
         // sets the border attribute of tbl to 2;
         tbl.setAttribute("border", "2");
+
+
+
+        for(var i1=0;i1<3;++i1)
+            result_matrix[i1][i1] += 1;
+
+        data_diff_2.forEach(function(diff){
+
+            diff2={alpha:Math.round(diff.alpha/norm_gain),
+                beta:Math.round(diff.beta/norm_gain),
+                gamma:Math.round(diff.gamma/norm_gain)
+            };
+            if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
+                Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
+                Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
+            {
+                data_diff_2.push(diff);
+                data_diff_3.push(diff2);
+            }
 
 
     }
