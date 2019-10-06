@@ -210,7 +210,6 @@ window.addEventListener('devicemotion', function(event) {
                     beta: data[i].beta - data[j].beta,
                     gamma: data[i].gamma - data[j].gamma
                 }
-                console.log(diff);
 
                 if(
                     Math.abs(diff.alpha)<maxdiff && diff.alpha!=0 &&
