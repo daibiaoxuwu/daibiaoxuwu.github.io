@@ -225,9 +225,9 @@ window.addEventListener('devicemotion', function(event) {
 
             };
 
-        document.querySelector('.line2').innerHTML="最小分度:"+min1*Math.pow(2,33);
-        document.querySelector('.line3').innerHTML="最小分度-校准:"+min2*Math.pow(2,33);
-        document.querySelector('.line4').innerHTML="最小分度2x:"+min3*Math.pow(2,33);
+        document.querySelector('.line2').innerHTML="最小分度:"+min1*Math.pow(2,33)+"deg/s,"+min1*Math.pow(2,33)*Math.PI/180+"rad/s,";
+        document.querySelector('.line3').innerHTML="最小分度-校准:"+min2*Math.pow(2,33)+"deg/s,"+min2*Math.pow(2,33)*Math.PI/180+"rad/s,";
+        document.querySelector('.line4').innerHTML="最小分度2x:"+min3*Math.pow(2,33)+"deg/s,"+min3*Math.pow(2,33)*Math.PI/180+"rad/s,";
 
     }
 })
