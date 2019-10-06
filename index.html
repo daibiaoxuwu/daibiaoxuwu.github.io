@@ -349,10 +349,10 @@ window.addEventListener('devicemotion', function(event) {
     result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
     }
 
+    create_table("指纹",result_matrix)
     create_table("左矩",left_matrix)
     create_table("左矩逆",left_matrix_inverse)
     create_table("右矩",right_matrix)
-    create_table("指纹",result_matrix)
 
 
 
