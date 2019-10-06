@@ -199,7 +199,7 @@ window.addEventListener('devicemotion', function(event) {
         line1.innerHTML="采集完毕";
         fade2(line1);
 
-        var norm_gain=4002/65536;
+        var norm_gain=4000/65536;
         var maxdiff=norm_gain*5;
         for(var i=0;i<maxi-1;++i)
             for(var j=i+1;j<maxi;++j)
@@ -218,7 +218,8 @@ window.addEventListener('devicemotion', function(event) {
                     for(var i2=0;i2<3;++i2)
                     {
                         var tempi = Math.abs(diff[names[i2]]);
-                        chart_data.push({x:chart_data.length,y:tempi});
+                        if(chart_data.length<1000 && tempi < 0.15)
+                            chart_data.push({x:chart_data.length,y:tempi});
                     }
                     data_diff.push(diff);
                 }
