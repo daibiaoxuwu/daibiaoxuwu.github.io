@@ -240,7 +240,9 @@ window.addEventListener('devicemotion', function(event) {
 
         data.push(temp)
 */
-        data.push(event.rotationRate);
+        data.push(event.rotationRate.alpha);
+        data.push(event.rotationRate.beta);
+        data.push(event.rotationRate.gamma);
         collects++;
         if(collects==maxi)
         line1.innerHTML="采集完毕,正在下载文件...";
