@@ -189,7 +189,7 @@ window.addEventListener('devicemotion', function(event) {
             for(var i2=0;i2<3;++i2)
                 temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
 
-        data.push(temp)
+        if(temp) data.push(temp)
 
         //data.push(event.rotationRate);
         collects++;
@@ -202,8 +202,8 @@ window.addEventListener('devicemotion', function(event) {
         //10494585
         var norm_gain=4002/65536;
         var maxdiff=norm_gain*5;
-        for(var i=0;i<maxi-1;++i)
-            for(var j=i+1;j<maxi;++j)
+        for(var i=0;i<data.length-1;++i)
+            for(var j=i+1;j<data.length;++j)
             {
                 diff={
                     alpha: data[i].alpha - data[j].alpha,
@@ -216,12 +216,12 @@ window.addEventListener('devicemotion', function(event) {
                     Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
                     Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
                 {
-                    data_diff.push(diff);
                     var i = Math.abs(diff.alpha);if(i!=0){
                         if(i<=min1)min1=i;
                         else if(i<=min1*1.5)min2=i;
                         else if(i<min3) min3=i;
                     }
+                    data_diff.push(diff);
                 }
 
             };
