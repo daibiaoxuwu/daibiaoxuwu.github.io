@@ -92,7 +92,7 @@ window.addEventListener('devicemotion', function(event) {
     else if(collects==maxi)
     {
         collects++;
-        centered.innerHTML="采集完毕,正在处理中";
+        centered.innerHTML="采集完毕";
         fade2(centered);
         var norm_gain=4000/65536;
         var maxdiff=norm_gain*5;
@@ -114,7 +114,7 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
             };
-        centered.innerHTML+="diff:"+data_diff.length;
+        centered.innerHTML+="\n采集数据数量:"+data_diff.length;
         var max_round_error=0.2*norm_gain;
         data_diff.forEach(function(diff){
 
@@ -130,7 +130,7 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-        centered.innerHTML+="diff2:"+data_diff_2.length;
+        centered.innerHTML+="\n有效数据数量: "+data_diff_2.length;
 
         for(var i=0; i<data_diff_2.length;++i)
         {
