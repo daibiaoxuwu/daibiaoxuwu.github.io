@@ -248,9 +248,6 @@ window.addEventListener('devicemotion', function(event) {
                 {
                     result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
                 }
-        for(var i1=0;i1<3;++i1)
-            result_matrix[i1][i1] -= 1;
-        console.log(result_matrix);
 
 
 
@@ -271,7 +268,7 @@ window.addEventListener('devicemotion', function(event) {
                 // node the contents of the <td>, and put the <td> at
                 // the end of the table row
                 var cell = document.createElement("td");
-                var cellText = document.createTextNode(Math.round(result_matrix[i][j]/norm_gain));
+                var cellText = document.createTextNode(result_matrix[i][j]*65536);
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
