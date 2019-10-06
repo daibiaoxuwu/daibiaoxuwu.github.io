@@ -217,10 +217,10 @@ window.addEventListener('devicemotion', function(event) {
                     Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
                     Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
                 {
-                    var i = Math.abs(diff.alpha);if(i!=0){
-                        if(i<=min1)min1=i;
-                        else if(i<=min1*1.5)min2=i;
-                        else if(i<min3) min3=i;
+                    var tempi = Math.abs(diff.alpha);if(tempi!=0){
+                        if(tempi<=min1)min1=tempi;
+                        else if(tempi<=min1*1.5)min2=tempi;
+                        else if(tempi<min3) min3=tempi;
                     }
                     data_diff.push(diff);
                 }
