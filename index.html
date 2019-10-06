@@ -216,7 +216,12 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
             };
-        document.querySelector('.line2').innerHTML="\n采集数据数量:"+data_diff.length;
+        document.querySelector('.line2').innerHTML="采集数据数量:"+data_diff.length;
+        var norm_data_length=maxi*(maxi-1)/2;
+        if(data_diff.length<norm_data_length/2)
+            document.querySelector('.line2').innerHTML+="\n数据数量不足,建议持稳手机.";
+
+
         var max_round_error=0.2*norm_gain;
         data_diff.forEach(function(diff){
 
@@ -232,7 +237,9 @@ window.addEventListener('devicemotion', function(event) {
                 data_diff_3.push(diff2);
             }
         });
-        document.querySelector('.line3').innerHTML="\n有效数据数量: "+data_diff_2.length;
+        document.querySelector('.line3').innerHTML="有效数据数量: "+data_diff_2.length;
+        if(data_diff.length<data_diff.length/2)
+            document.querySelector('.line3').innerHTML+="\n有效数据较少:增益可能估算有误.";
 
         for(var i=0; i<data_diff_2.length;++i)
         {
