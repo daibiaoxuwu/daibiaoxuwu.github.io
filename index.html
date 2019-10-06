@@ -218,7 +218,7 @@ window.addEventListener('devicemotion', function(event) {
                     Math.abs(diff.gamma)<maxdiff &&  Math.abs(diff.gamma)>1e-4)
                 {
                     var tempi = Math.abs(diff.alpha);
-                    if(tempi<=min1)min1=tempi;
+                    if(tempi<=min1){min2=min1;min1=tempi;}
                     else if(tempi<=min1*1.5)min2=tempi;
                     else if(tempi<min3) min3=tempi;
                     data_diff.push(diff);
