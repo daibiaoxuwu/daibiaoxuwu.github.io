@@ -75,39 +75,39 @@
                     // the other rows so that there will be 0's in this column in the
                     // rows above and below this one
                     for(ii=0; ii<dim; ii++){
-                    // Only apply to other rows (we want a 1 on the diagonal)
-                    if(ii==i){
-                    continue;
+                        // Only apply to other rows (we want a 1 on the diagonal)
+                        if(ii==i){
+                            continue;
+                        }
+
+                        // We want to change this element to 0
+                        e = C[ii][i];
+
+                        // Subtract (the row above(or below) scaled by e) from (the
+                        // current row) but start at the i'th column and assume all the
+                        // stuff left of diagonal is 0 (which it should be if we made this
+                        // algorithm correctly)
+                        for(j=0; j<dim; j++){
+                            C[ii][j] -= e*C[i][j]; //apply to original matrix
+                            I[ii][j] -= e*I[i][j]; //apply to identity
+                        }
                     }
+                }
 
-// We want to change this element to 0
-e = C[ii][i];
-
-// Subtract (the row above(or below) scaled by e) from (the
-// current row) but start at the i'th column and assume all the
-              // stuff left of diagonal is 0 (which it should be if we made this
-              // algorithm correctly)
-              for(j=0; j<dim; j++){
-              C[ii][j] -= e*C[i][j]; //apply to original matrix
-              I[ii][j] -= e*I[i][j]; //apply to identity
-              }
-              }
-              }
-
-              //we've done all operations, C should be the identity
-              //matrix I should be the inverse:
-              return I;
-              }
+                //we've done all operations, C should be the identity
+                //matrix I should be the inverse:
+                return I;
+            }
         </script>
-              <style type="text/css">
-              .line1 {
-              margin: 20%;
-              text-align: center;
-              }
+                        <style type="text/css">
+.centered {
+    margin: 20%;
+    text-align: center;
+}
               .is-hidden {
-              display: none;
+                  display: none;
               }
-              </style>
+                        </style>
     </head>
                     <body>  
                         <div class="centered">
@@ -122,32 +122,32 @@ e = C[ii][i];
 
                         <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
                         <script>
-                        // fade out
+                            // fade out
 
 
-var line1 = document.querySelector('.line1');
+                            var line1 = document.querySelector('.line1');
 function fade2() {
-var val = parseFloat(line1.style.opacity);
-if(isNaN(val))val=1;
-if (!((val -= .1) < 0)) {
-line1.style.opacity = val;
-requestAnimationFrame(fade2);
-} else {
-requestAnimationFrame(fade);
-}
+    var val = parseFloat(line1.style.opacity);
+    if(isNaN(val))val=1;
+    if (!((val -= .1) < 0)) {
+        line1.style.opacity = val;
+        requestAnimationFrame(fade2);
+    } else {
+        requestAnimationFrame(fade);
+    }
 }
 
 // fade in
 
 function fade() {
-var val = parseFloat(line1.style.opacity);
-if(isNaN(val))val=0;
-if (!((val += .1) > 1)) {
-line1.style.opacity = val;
-requestAnimationFrame(fade);
-}
-else
-val=1;
+    var val = parseFloat(line1.style.opacity);
+    if(isNaN(val))val=0;
+    if (!((val += .1) > 1)) {
+        line1.style.opacity = val;
+        requestAnimationFrame(fade);
+    }
+    else
+        val=1;
 };
 
 fade2(line1);
@@ -167,136 +167,136 @@ var cal_matrix=[[1.06,0.1,0.05],[0.1,1.07,0.02],[0.05,0.02,1.08]]
 var names=['alpha','beta','gamma'];
 
 window.addEventListener('devicemotion', function(event) {
-if(collects<maxi){
-output.innerHTML ="index:" + collects + '\n';
-output.innerHTML+="accx:" + event.acceleration.x + ' m/s2\n';
-output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
-output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
-output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
-output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
-output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
+    if(collects<maxi){
+        output.innerHTML ="index:" + collects + '\n';
+        output.innerHTML+="accx:" + event.acceleration.x + ' m/s2\n';
+        output.innerHTML+="accy:" + event.acceleration.y + ' m/s2\n';
+        output.innerHTML+="accz:" + event.acceleration.z + ' m/s2\n';
+        output.innerHTML+="rota:" + event.rotationRate.alpha + ' deg/s\n';
+        output.innerHTML+="rotb:" + event.rotationRate.beta + ' deg/s\n';
+        output.innerHTML+="roty:" + event.rotationRate.gamma + ' deg/s\n';
 
-sens_list += output.innerHTML;
+        sens_list += output.innerHTML;
 
-temp={alpha:0,beta:0,gamma:0};
-for(var i1=0;i1<3;++i1)
-for(var i2=0;i2<3;++i2)
-temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
+        temp={alpha:0,beta:0,gamma:0};
+        for(var i1=0;i1<3;++i1)
+            for(var i2=0;i2<3;++i2)
+                temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
 
-data.push(temp)
+        data.push(temp)
 
-//data.push(event.rotationRate);
-collects++;
-}
-else if(collects==maxi)
-{
-collects++;
-line1.innerHTML="采集完毕";
-fade2(line1);
+        //data.push(event.rotationRate);
+        collects++;
+    }
+    else if(collects==maxi)
+    {
+        collects++;
+        line1.innerHTML="采集完毕";
+        fade2(line1);
 
-var norm_gain=4002/65536;
-var maxdiff=norm_gain*5;
-for(var i=0;i<maxi-1;++i)
-for(var j=i+1;j<maxi;++j)
-{
-diff={
-alpha: data[i].alpha - data[j].alpha,
-beta: data[i].beta - data[j].beta,
-gamma: data[i].gamma - data[j].gamma
-}
+        var norm_gain=4002/65536;
+        var maxdiff=norm_gain*5;
+        for(var i=0;i<maxi-1;++i)
+            for(var j=i+1;j<maxi;++j)
+            {
+                diff={
+                    alpha: data[i].alpha - data[j].alpha,
+                    beta: data[i].beta - data[j].beta,
+                    gamma: data[i].gamma - data[j].gamma
+                }
 
-if(
-Math.abs(diff.alpha)<maxdiff && diff.alpha!=0 &&
-Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
-Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
-{
-data_diff.push(diff);
-}
+                if(
+                    Math.abs(diff.alpha)<maxdiff && diff.alpha!=0 &&
+                    Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
+                    Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
+                {
+                    data_diff.push(diff);
+                }
 
-};
-document.querySelector('.line2').innerHTML="\n采集数据数量:"+data_diff.length;
-var max_round_error=0.2*norm_gain;
-data_diff.forEach(function(diff){
+            };
+        document.querySelector('.line2').innerHTML="\n采集数据数量:"+data_diff.length;
+        var max_round_error=0.2*norm_gain;
+        data_diff.forEach(function(diff){
 
-diff2={alpha:Math.round(diff.alpha/norm_gain),
-beta:Math.round(diff.beta/norm_gain),
-gamma:Math.round(diff.gamma/norm_gain)
-};
-if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
-Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
-Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
-{
-data_diff_2.push(diff);
-data_diff_3.push(diff2);
-}
-});
-document.querySelector('.line3').innerHTML="\n有效数据数量: "+data_diff_2.length;
+            diff2={alpha:Math.round(diff.alpha/norm_gain),
+                beta:Math.round(diff.beta/norm_gain),
+                gamma:Math.round(diff.gamma/norm_gain)
+            };
+            if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
+                Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
+                Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
+            {
+                data_diff_2.push(diff);
+                data_diff_3.push(diff2);
+            }
+        });
+        document.querySelector('.line3').innerHTML="\n有效数据数量: "+data_diff_2.length;
 
-for(var i=0; i<data_diff_2.length;++i)
-{
-for(var i1=0;i1<3;++i1)
-for(var i2=0;i2<3;++i2)
-{
-left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
-right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
-}
-}
+        for(var i=0; i<data_diff_2.length;++i)
+        {
+            for(var i1=0;i1<3;++i1)
+                for(var i2=0;i2<3;++i2)
+                {
+                    left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
+                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
+                }
+        }
 
-// Returns the inverse of matrix `M`.
-left_matrix_inverse = matrix_invert(left_matrix);
-console.log(left_matrix_inverse);
-console.log(left_matrix);
-console.log(right_matrix);
+        // Returns the inverse of matrix `M`.
+            left_matrix_inverse = matrix_invert(left_matrix);
+        console.log(left_matrix_inverse);
+        console.log(left_matrix);
+        console.log(right_matrix);
 
-for(var i1=0;i1<3;++i1)
-for(var i2=0;i2<3;++i2)
-for(var i3=0;i3<3;++i3)
-{
-result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
-}
-
-
+        for(var i1=0;i1<3;++i1)
+            for(var i2=0;i2<3;++i2)
+                for(var i3=0;i3<3;++i3)
+                {
+                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
+                }
 
 
-var body = document.getElementsByTagName("body")[0];
-
-// creates a <table> element and a <tbody> element
-var tbl = document.createElement("table");
-var tblBody = document.createElement("tbody");
-
-// creating all cells
-for (var i = 0; i < 3; i++) {
-// creates a table row
-var row = document.createElement("tr");
-
-for (var j = 0; j < 3; j++) {
-// Create a <td> element and a text node, make the text
-// node the contents of the <td>, and put the <td> at
-// the end of the table row
-var cell = document.createElement("td");
-var cellText = document.createTextNode(result_matrix[i][j]*65536);
-cell.appendChild(cellText);
-row.appendChild(cell);
-}
-
-// add the row to the end of the table body
-tblBody.appendChild(row);
-}
-
-// put the <tbody> in the <table>
-tbl.appendChild(tblBody);
-// appends <table> into <body>
-body.appendChild(tbl);
-// sets the border attribute of tbl to 2;
-tbl.setAttribute("border", "2");
 
 
-}
+        var body = document.getElementsByTagName("body")[0];
+
+        // creates a <table> element and a <tbody> element
+        var tbl = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+
+        // creating all cells
+        for (var i = 0; i < 3; i++) {
+            // creates a table row
+            var row = document.createElement("tr");
+
+            for (var j = 0; j < 3; j++) {
+                // Create a <td> element and a text node, make the text
+                // node the contents of the <td>, and put the <td> at
+                // the end of the table row
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode(result_matrix[i][j]*65536);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+            }
+
+            // add the row to the end of the table body
+            tblBody.appendChild(row);
+        }
+
+        // put the <tbody> in the <table>
+            tbl.appendChild(tblBody);
+        // appends <table> into <body>
+            body.appendChild(tbl);
+        // sets the border attribute of tbl to 2;
+        tbl.setAttribute("border", "2");
+
+
+    }
 })
 
 
 
                         </script>
 
-    </body>
+            </body>
 </html>
