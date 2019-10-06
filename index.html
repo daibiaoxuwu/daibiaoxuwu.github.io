@@ -4,155 +4,189 @@
         <meta charset="UTF-8">
         <title>SensorID by daibiaoxuwu</title>
         <script>
-            function matrix_invert(M){
-                // I use Guassian Elimination to calculate the inverse:
-                // (1) 'augment' the matrix (left) by the identity (on the right)
-                // (2) Turn the matrix on the left into the identity by elemetry row ops
-                // (3) The matrix on the right is the inverse (was the identity matrix)
-                // There are 3 elemtary row ops: (I combine b and c in my code)
-                // (a) Swap 2 rows
-                // (b) Multiply a row by a scalar
-                // (c) Add 2 rows
+            function create_table(result_matrix){
+                var body = document.querySelector(".centered");
 
-                //if the matrix isn't square: exit (error)
-                if(M.length !== M[0].length){return;}
+                // creates a <table> element and a <tbody> element
+                var tbl = document.createElement("table");
+                var tblBody = document.createElement("tbody");
 
-                //create the identity matrix (I), and a copy (C) of the original
-                var i=0, ii=0, j=0, dim=M.length, e=0, t=0;
-                var I = [], C = [];
-                for(i=0; i<dim; i+=1){
-                    // Create the row
-                    I[I.length]=[];
-                    C[C.length]=[];
-                    for(j=0; j<dim; j+=1){
+                // creating all cells
+                for (var i = 0; i < 3; i++) {
+                    // creates a table row
+                    var row = document.createElement("tr");
 
-                        //if we're on the diagonal, put a 1 (for identity)
-                        if(i==j){ I[i][j] = 1; }
-                        else{ I[i][j] = 0; }
-
-                        // Also, make the copy of the original
-                        C[i][j] = M[i][j];
+                    for (var j = 0; j < 3; j++) {
+                        // Create a <td> element and a text node, make the text
+                        // node the contents of the <td>, and put the <td> at
+                        // the end of the table row
+                        var cell = document.createElement("td");
+                        var cellText = document.createTextNode(result_matrix[i][j]*65536);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
                     }
+
+                    // add the row to the end of the table body
+                    tblBody.appendChild(row);
                 }
 
-                // Perform elementary row operations
-                for(i=0; i<dim; i+=1){
-                    // get the element e on the diagonal
-                    e = C[i][i];
+                // put the <tbody> in the <table>
+                tbl.appendChild(tblBody);
+                // appends <table> into <body>
+                body.appendChild(tbl);
+                // sets the border attribute of tbl to 2;
+                tbl.setAttribute("border", "2");
 
-                    // if we have a 0 on the diagonal (we'll need to swap with a lower row)
-                    if(e==0){
-                        //look through every row below the i'th row
-                        for(ii=i+1; ii<dim; ii+=1){
-                            //if the ii'th row has a non-0 in the i'th col
-                            if(C[ii][i] != 0){
-                                //it would make the diagonal have a non-0 so swap it
-                                for(j=0; j<dim; j++){
-                                    e = C[i][j];       //temp store i'th row
-                                    C[i][j] = C[ii][j];//replace i'th row by ii'th
-                                    C[ii][j] = e;      //repace ii'th by temp
-                                    e = I[i][j];       //temp store i'th row
-                                    I[i][j] = I[ii][j];//replace i'th row by ii'th
-                                    I[ii][j] = e;      //repace ii'th by temp
-                                }
-                                //don't bother checking other rows since we've swapped
-                                break;
-                            }
-                        }
-                        //get the new diagonal
-                        e = C[i][i];
-                        //if it's still 0, not invertable (error)
-                        if(e==0){return}
-                    }
+            }
+function matrix_invert(M){
+    // I use Guassian Elimination to calculate the inverse:
+    // (1) 'augment' the matrix (left) by the identity (on the right)
+    // (2) Turn the matrix on the left into the identity by elemetry row ops
+    // (3) The matrix on the right is the inverse (was the identity matrix)
+    // There are 3 elemtary row ops: (I combine b and c in my code)
+    // (a) Swap 2 rows
+    // (b) Multiply a row by a scalar
+    // (c) Add 2 rows
 
-                    // Scale this row down by e (so we have a 1 on the diagonal)
+    //if the matrix isn't square: exit (error)
+    if(M.length !== M[0].length){return;}
+
+    //create the identity matrix (I), and a copy (C) of the original
+    var i=0, ii=0, j=0, dim=M.length, e=0, t=0;
+    var I = [], C = [];
+    for(i=0; i<dim; i+=1){
+        // Create the row
+        I[I.length]=[];
+        C[C.length]=[];
+        for(j=0; j<dim; j+=1){
+
+            //if we're on the diagonal, put a 1 (for identity)
+            if(i==j){ I[i][j] = 1; }
+            else{ I[i][j] = 0; }
+
+            // Also, make the copy of the original
+            C[i][j] = M[i][j];
+        }
+    }
+
+    // Perform elementary row operations
+    for(i=0; i<dim; i+=1){
+        // get the element e on the diagonal
+        e = C[i][i];
+
+        // if we have a 0 on the diagonal (we'll need to swap with a lower row)
+        if(e==0){
+            //look through every row below the i'th row
+            for(ii=i+1; ii<dim; ii+=1){
+                //if the ii'th row has a non-0 in the i'th col
+                if(C[ii][i] != 0){
+                    //it would make the diagonal have a non-0 so swap it
                     for(j=0; j<dim; j++){
-                        C[i][j] = C[i][j]/e; //apply to original matrix
-                        I[i][j] = I[i][j]/e; //apply to identity
+                        e = C[i][j];       //temp store i'th row
+                        C[i][j] = C[ii][j];//replace i'th row by ii'th
+                        C[ii][j] = e;      //repace ii'th by temp
+                        e = I[i][j];       //temp store i'th row
+                        I[i][j] = I[ii][j];//replace i'th row by ii'th
+                        I[ii][j] = e;      //repace ii'th by temp
                     }
+                    //don't bother checking other rows since we've swapped
+                    break;
+                }
+            }
+            //get the new diagonal
+            e = C[i][i];
+            //if it's still 0, not invertable (error)
+            if(e==0){return}
+        }
 
-                    // Subtract this row (scaled appropriately for each row) from ALL of
-                    // the other rows so that there will be 0's in this column in the
-                    // rows above and below this one
-                    for(ii=0; ii<dim; ii++){
-                        // Only apply to other rows (we want a 1 on the diagonal)
-                        if(ii==i){
-                            continue;
-                        }
+        // Scale this row down by e (so we have a 1 on the diagonal)
+        for(j=0; j<dim; j++){
+            C[i][j] = C[i][j]/e; //apply to original matrix
+            I[i][j] = I[i][j]/e; //apply to identity
+        }
 
-                        // We want to change this element to 0
-                        e = C[ii][i];
+        // Subtract this row (scaled appropriately for each row) from ALL of
+        // the other rows so that there will be 0's in this column in the
+        // rows above and below this one
+        for(ii=0; ii<dim; ii++){
+            // Only apply to other rows (we want a 1 on the diagonal)
+            if(ii==i){
+                continue;
+            }
 
-                        // Subtract (the row above(or below) scaled by e) from (the
-                        // current row) but start at the i'th column and assume all the
-                        // stuff left of diagonal is 0 (which it should be if we made this
-                        // algorithm correctly)
-                        for(j=0; j<dim; j++){
-                            C[ii][j] -= e*C[i][j]; //apply to original matrix
-              I[ii][j] -= e*I[i][j]; //apply to identity
-              }
-              }
-              }
+            // We want to change this element to 0
+            e = C[ii][i];
 
-              //we've done all operations, C should be the identity
-              //matrix I should be the inverse:
-              return I;
-              }
+            // Subtract (the row above(or below) scaled by e) from (the
+            // current row) but start at the i'th column and assume all the
+            // stuff left of diagonal is 0 (which it should be if we made this
+            // algorithm correctly)
+            for(j=0; j<dim; j++){
+                C[ii][j] -= e*C[i][j]; //apply to original matrix
+                I[ii][j] -= e*I[i][j]; //apply to identity
+            }
+        }
+    }
+
+    //we've done all operations, C should be the identity
+    //matrix I should be the inverse:
+    return I;
+}
         </script>
-                        <style type="text/css">
-                        .centered {
-                        margin: 20%;
-                        text-align: center;
-                        white-space:pre;
+            <style type="text/css">
+.centered {
+    margin: 20%;
+    text-align: center;
+    white-space:pre;
 
 }
 .is-hidden {
-display: none;
+    display: none;
 }
-                        </style>
+            </style>
     </head>
-                    <body>  
-                        <div class="centered">
-                            <h2>SensorID 论文复现</h2>
-                            <p class="line1">正在探测传感器标定增益...</p>
-                            <p class="output"></p>
-                            <p class="line2"></p>
-                            <p class="line3"></p>
-                            <canvas id="myChart" width="400" height="400"></canvas>
-                        </div>
+        <body>  
+            <div class="centered">
+                <h2>SensorID 论文复现</h2>
+                <p class="line1">正在探测传感器标定增益...</p>
+                <p class="output"></p>
+                <p class="line2"></p>
+                <p class="line3"></p>
+                <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
 
 
+            <script src="https://unpkg.com/mathjs/dist/math.min.js"></script>
+            <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+            <script>
+                // fade out
 
-                        <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
-                        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-                        <script>
-                        // fade out
 
-
-var line1 = document.querySelector('.line1');
+                var line1 = document.querySelector('.line1');
 function fade2() {
-var val = parseFloat(line1.style.opacity);
-if(isNaN(val))val=1;
-if (!((val -= .1) < 0)) {
-line1.style.opacity = val;
-requestAnimationFrame(fade2);
-} else {
-requestAnimationFrame(fade);
-}
+    var val = parseFloat(line1.style.opacity);
+    if(isNaN(val))val=1;
+    if (!((val -= .1) < 0)) {
+        line1.style.opacity = val;
+        requestAnimationFrame(fade2);
+    } else {
+        requestAnimationFrame(fade);
+    }
 }
 
 // fade in
 
-    function fade() {
-        var val = parseFloat(line1.style.opacity);
-        if(isNaN(val))val=0;
-        if (!((val += .1) > 1)) {
-            line1.style.opacity = val;
-            requestAnimationFrame(fade);
-        }
-        else
-            val=1;
-    };
+function fade() {
+    var val = parseFloat(line1.style.opacity);
+    if(isNaN(val))val=0;
+    if (!((val += .1) > 1)) {
+        line1.style.opacity = val;
+        requestAnimationFrame(fade);
+    }
+    else
+        val=1;
+};
 
 fade2(line1);
 
@@ -160,7 +194,7 @@ var output = document.querySelector('.output');
 var sens_list="";
 var data=[];
 var collects=0;
-var maxi=300;
+var maxi=2000;
 var data_diff=[];
 var data_diff_2=[];
 var data_diff_3=[];
@@ -233,7 +267,7 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
             };
-        
+
         for(var i2=0;i2<3;++i2)
             sum_gain[i2]/=sum_gain_count[i2];
 
@@ -271,84 +305,57 @@ window.addEventListener('devicemotion', function(event) {
             type: 'scatter',
             data: {
                 datasets: [{
-                    label: 'Scatter Dataset',
-                    data: chart_data
-                }]
-            },
-            options: {
-                scales: {
-                    xAxes: [{
-                        type: 'linear',
-                        position: 'bottom'
-                    }]
-                }
-            }
-        });
-        for(var i=0; i<data_diff_2.length;++i)
-        {
-            for(var i1=0;i1<3;++i1)
-                for(var i2=0;i2<3;++i2)
-                {
-                    left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
-                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]];
-                }
-        }
+    label: 'Scatter Dataset',
+    data: chart_data
+    }]
+    },
+    options: {
+    scales: {
+    xAxes: [{
+    type: 'linear',
+    position: 'bottom'
+    }]
+    }
+    }
+    });
+    for(var i=0; i<data_diff_2.length;++i)
+    {
+    for(var i1=0;i1<3;++i1)
+    for(var i2=0;i2<3;++i2)
+    {
+    left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
+    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]];
+    }
+    }
 
-        // Returns the inverse of matrix `M`.
-            left_matrix_inverse = matrix_invert(left_matrix);
-        console.log(left_matrix_inverse);
-        console.log(left_matrix);
-        console.log(right_matrix);
+    // Returns the inverse of matrix `M`.
+    left_matrix_inverse = math.inv(left_matrix);
+    console.log(left_matrix_inverse);
+    console.log(left_matrix);
+    console.log(right_matrix);
 
-        for(var i1=0;i1<3;++i1)
-            for(var i2=0;i2<3;++i2)
-                for(var i3=0;i3<3;++i3)
-                {
-                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
-                }
+    for(var i1=0;i1<3;++i1)
+    for(var i2=0;i2<3;++i2)
+    for(var i3=0;i3<3;++i3)
+    {
+    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
+    }
+
+    create_table(left_matrix)
+    create_table(right_matrix)
+    create_table(result_matrix)
 
 
 
 
-        var body = document.querySelector(".centered");
-
-        // creates a <table> element and a <tbody> element
-        var tbl = document.createElement("table");
-        var tblBody = document.createElement("tbody");
-
-        // creating all cells
-        for (var i = 0; i < 3; i++) {
-            // creates a table row
-            var row = document.createElement("tr");
-
-            for (var j = 0; j < 3; j++) {
-                // Create a <td> element and a text node, make the text
-                // node the contents of the <td>, and put the <td> at
-                // the end of the table row
-                var cell = document.createElement("td");
-                var cellText = document.createTextNode(result_matrix[i][j]*65536);
-                cell.appendChild(cellText);
-                row.appendChild(cell);
-            }
-
-            // add the row to the end of the table body
-            tblBody.appendChild(row);
-        }
-
-        // put the <tbody> in the <table>
-            tbl.appendChild(tblBody);
-        // appends <table> into <body>
-            body.appendChild(tbl);
-        // sets the border attribute of tbl to 2;
-        tbl.setAttribute("border", "2");
 
 
     }
-})
+    })
 
 
 
-                        </script>
+            </script>
 
-            </body>
+        </body>
 </html>
