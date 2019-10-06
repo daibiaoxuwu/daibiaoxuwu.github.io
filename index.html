@@ -15,50 +15,43 @@
 }
         </style>
     </head>
-    <body>
+    <body>  
         <pre class="output">123</pre>
-        <div class="centered is-hidden">请持稳手机...</div>
+        <div class="centered">请持稳手机...</div>
 
 
 
-        <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
-    <script>
-        // fade out
+        <!--        <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script> -->
+        <script>
+            // fade out
+            
 
-function fadeOut(el){
-  el.style.opacity = 1;
-
-  (function fade() {
-    if ((el.style.opacity -= .1) < 0) {
-      el.style.display = 'none';
-      el.classList.add('is-hidden');
+            var centered = document.querySelector('.centered');             
+function fade2() {
+    var val = parseFloat(centered.style.opacity);
+    if(isNaN(val))val=1;
+    if (!((val -= .1) < 0)) {
+        centered.style.opacity = val;
+        requestAnimationFrame(fade2);
     } else {
-      requestAnimationFrame(fade);
+        requestAnimationFrame(fade);
     }
-  })();
 }
 
 // fade in
 
-function fadeIn(el, display){
-  if (el.classList.contains('is-hidden')){
-    el.classList.remove('is-hidden');
-  }
-  el.style.opacity = 0;
-  el.style.display = display || "block";
-
-  (function fade() {
-    var val = parseFloat(el.style.opacity);
+function fade() {
+    var val = parseFloat(centered.style.opacity);
+    if(isNaN(val))val=0;
     if (!((val += .1) > 1)) {
-      el.style.opacity = val;
-      requestAnimationFrame(fade);
+        centered.style.opacity = val;
+        requestAnimationFrame(fade);
     }
-  })();
-}
+    else
+        val=1;
+};
 
-        var centered = document.querySelector('.centered');             
-fadeIn(centered);
-fadeOut(centered);
+fade2(centered);
 
 var output = document.querySelector('.output');
 var sens_list="";
@@ -99,7 +92,8 @@ window.addEventListener('devicemotion', function(event) {
     else if(collects==maxi)
     {
         collects++;
-        alert("collect finish");
+        centered.innerHTML="采集完毕,正在处理中";
+        fade2(centered);
         var norm_gain=0.07;
         var maxdiff=norm_gain*5;
         for(var i=0;i<maxi-1;++i)
@@ -120,6 +114,7 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
             };
+        fadeOut(centered);
         alert("diff:"+data_diff.length);
         var max_round_error=0.2*norm_gain;
         data_diff.forEach(function(diff){
@@ -299,7 +294,7 @@ window.addEventListener('devicemotion', function(event) {
 
 
 
-    </script>
+        </script>
 
             </body>
 </html>
