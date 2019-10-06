@@ -112,10 +112,11 @@
                     <body>  
                         <div class="centered">
                             <h2>SensorID 论文复现</h2>
-                            <p class="line1">正在探测传感器标定增益...</p>
-                            <p class="output"></p>
-                            <p class="line2"></p>
-                            <p class="line3"></p>
+                            <div class="line1">正在探测传感器标定增益...</div>
+                            <div class="output"></div>
+                            <div class="line2"></div>
+                            <div class="line3"></div>
+                            <div class="line4"></div>
                         </div>
 
 
@@ -166,6 +167,10 @@ var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 var cal_matrix=[[1.06,0.1,0.05],[0.1,1.07,0.02],[0.05,0.02,1.08]]
 var names=['alpha','beta','gamma'];
 
+var min1=1;
+var min2=1;
+var min3=1;
+
 window.addEventListener('devicemotion', function(event) {
     if(collects<maxi){
         output.innerHTML ="index:" + collects + '\n';
@@ -193,7 +198,7 @@ window.addEventListener('devicemotion', function(event) {
         collects++;
         line1.innerHTML="采集完毕";
         fade2(line1);
-
+        //10494585
         var norm_gain=4002/65536;
         var maxdiff=norm_gain*5;
         for(var i=0;i<maxi-1;++i)
@@ -213,83 +218,16 @@ window.addEventListener('devicemotion', function(event) {
                     data_diff.push(diff);
                 }
 
-            };
-        document.querySelector('.line2').innerHTML="\n采集数据数量:"+data_diff.length;
-        var max_round_error=0.2*norm_gain;
-        data_diff.forEach(function(diff){
-
-            diff2={alpha:Math.round(diff.alpha/norm_gain),
-                beta:Math.round(diff.beta/norm_gain),
-                gamma:Math.round(diff.gamma/norm_gain)
-            };
-            if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
-                Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
-                Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
-            {
-                data_diff_2.push(diff);
-                data_diff_3.push(diff2);
-            }
-        });
-        document.querySelector('.line3').innerHTML="\n有效数据数量: "+data_diff_2.length;
-
-        for(var i=0; i<data_diff_2.length;++i)
-        {
-            for(var i1=0;i1<3;++i1)
-                for(var i2=0;i2<3;++i2)
-                {
-                    left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
-                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
+                var i = Math.abs(diff.alpha);if(i!=0){
+                    if(i<=min1)min1=i;
+                    else if(i<=min1*1.5)min2=i;
+                    else if(i<min3) min3=i;
                 }
-        }
+            };
 
-        // Returns the inverse of matrix `M`.
-            left_matrix_inverse = matrix_invert(left_matrix);
-        console.log(left_matrix_inverse);
-        console.log(left_matrix);
-        console.log(right_matrix);
-
-        for(var i1=0;i1<3;++i1)
-            for(var i2=0;i2<3;++i2)
-                for(var i3=0;i3<3;++i3)
-                {
-                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
-                }
-
-
-
-
-        var body = document.getElementsByTagName("body")[0];
-
-        // creates a <table> element and a <tbody> element
-        var tbl = document.createElement("table");
-        var tblBody = document.createElement("tbody");
-
-        // creating all cells
-        for (var i = 0; i < 3; i++) {
-            // creates a table row
-            var row = document.createElement("tr");
-
-            for (var j = 0; j < 3; j++) {
-                // Create a <td> element and a text node, make the text
-                // node the contents of the <td>, and put the <td> at
-                // the end of the table row
-                var cell = document.createElement("td");
-                var cellText = document.createTextNode(result_matrix[i][j]*65536);
-                cell.appendChild(cellText);
-                row.appendChild(cell);
-            }
-
-            // add the row to the end of the table body
-            tblBody.appendChild(row);
-        }
-
-        // put the <tbody> in the <table>
-            tbl.appendChild(tblBody);
-        // appends <table> into <body>
-            body.appendChild(tbl);
-        // sets the border attribute of tbl to 2;
-        tbl.setAttribute("border", "2");
-
+        document.querySelector('.line2').innerHTML="最小分度:"+min1*Math.pow(2,33);
+        document.querySelector('.line3').innerHTML="最小分度-校准:"+min2*Math.pow(2,33);
+        document.querySelector('.line4').innerHTML="最小分度2x:"+min3*Math.pow(2,33);
 
     }
 })
@@ -298,5 +236,5 @@ window.addEventListener('devicemotion', function(event) {
 
                         </script>
 
-            </body>
+                    </body>
 </html>
