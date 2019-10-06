@@ -150,8 +150,17 @@ function fade() {
         line1.style.opacity = val;
         requestAnimationFrame(fade);
     }
+};
+
+function flash() {
+    var val = parseFloat(line1.style.opacity);
+    if(isNaN(val))val=0;
+    if (!((val += .1) > 1)) {
+        line1.style.opacity = val;
+        requestAnimationFrame(fade);
+    }
     else
-        val=1;
+        requestAnimationFrame(fade2);
 };
 
 fade2(line1);
@@ -160,7 +169,7 @@ var output = document.querySelector('.output');
 var sens_list="";
 var data=[];
 var collects=0;
-var maxi=300;
+var maxi=200;
 var data_diff=[];
 var data_diff_2=[];
 var data_diff_3=[];
@@ -200,8 +209,8 @@ window.addEventListener('devicemotion', function(event) {
     else if(collects==maxi)
     {
         collects++;
-        line1.innerHTML="采集完毕";
-        fade2(line1);
+        line1.innerHTML="采集完毕,正在绘制图表...";
+        flash(line1);
         //10494585
         var norm_gain=4002/65536;
         var maxdiff=0.5;
@@ -251,6 +260,8 @@ window.addEventListener('devicemotion', function(event) {
         }
     }
 });
+        line1.innerHTML="绘制完毕";
+        fade2(line1);
 
         document.querySelector('.line2').innerHTML="最小分度:"+min1*Math.pow(2,33)+"deg/2^33s,"+min1*Math.pow(2,33)*Math.PI/180+"rad/2^33s";
         document.querySelector('.line3').innerHTML="最小分度-校准:"+min2*Math.pow(2,33)+"deg/2^33s,"+min2*Math.pow(2,33)*Math.PI/180+"rad/2^33s";
