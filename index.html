@@ -89,26 +89,26 @@
                         // algorithm correctly)
                         for(j=0; j<dim; j++){
                             C[ii][j] -= e*C[i][j]; //apply to original matrix
-                            I[ii][j] -= e*I[i][j]; //apply to identity
-                        }
-                    }
-                }
+              I[ii][j] -= e*I[i][j]; //apply to identity
+              }
+              }
+              }
 
-                //we've done all operations, C should be the identity
-                //matrix I should be the inverse:
-                return I;
-            }
+              //we've done all operations, C should be the identity
+              //matrix I should be the inverse:
+              return I;
+              }
         </script>
                         <style type="text/css">
-.centered {
-    margin: 20%;
-    text-align: center;
-    white-space:pre;
+                        .centered {
+                        margin: 20%;
+                        text-align: center;
+                        white-space:pre;
 
 }
-              .is-hidden {
-                  display: none;
-              }
+.is-hidden {
+display: none;
+}
                         </style>
     </head>
                     <body>  
@@ -124,34 +124,35 @@
 
 
                         <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
                         <script>
-                            // fade out
+                        // fade out
 
 
-                            var line1 = document.querySelector('.line1');
+var line1 = document.querySelector('.line1');
 function fade2() {
-    var val = parseFloat(line1.style.opacity);
-    if(isNaN(val))val=1;
-    if (!((val -= .1) < 0)) {
-        line1.style.opacity = val;
-        requestAnimationFrame(fade2);
-    } else {
-        requestAnimationFrame(fade);
-    }
+var val = parseFloat(line1.style.opacity);
+if(isNaN(val))val=1;
+if (!((val -= .1) < 0)) {
+line1.style.opacity = val;
+requestAnimationFrame(fade2);
+} else {
+requestAnimationFrame(fade);
+}
 }
 
 // fade in
 
-function fade() {
-    var val = parseFloat(line1.style.opacity);
-    if(isNaN(val))val=0;
-    if (!((val += .1) > 1)) {
-        line1.style.opacity = val;
-        requestAnimationFrame(fade);
-    }
-    else
-        val=1;
-};
+    function fade() {
+        var val = parseFloat(line1.style.opacity);
+        if(isNaN(val))val=0;
+        if (!((val += .1) > 1)) {
+            line1.style.opacity = val;
+            requestAnimationFrame(fade);
+        }
+        else
+            val=1;
+    };
 
 fade2(line1);
 
@@ -249,23 +250,23 @@ window.addEventListener('devicemotion', function(event) {
             document.querySelector('.line3').innerHTML+="\n有效数据较少:增益可能估算有误.";
 
         var ctx = document.getElementById('myChart').getContext('2d');
-    var scatterChart = new Chart(ctx, {
-    type: 'scatter',
-    data: {
-        datasets: [{
-            label: 'Scatter Dataset',
-            data: chart_data
-        }]
-    },
-    options: {
-        scales: {
-            xAxes: [{
-                type: 'linear',
-                position: 'bottom'
-            }]
-        }
-    }
-});
+        var scatterChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Scatter Dataset',
+                    data: chart_data
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
         for(var i=0; i<data_diff_2.length;++i)
         {
             for(var i1=0;i1<3;++i1)
