@@ -201,6 +201,9 @@ window.addEventListener('devicemotion', function(event) {
 
         var norm_gain=4000/65536;
         var maxdiff=norm_gain*5;
+
+        var sum_gain=[0,0,0];
+        var sum_gain_count=[0,0,0];
         for(var i=0;i<maxi-1;++i)
             for(var j=i+1;j<maxi;++j)
             {
@@ -220,33 +223,46 @@ window.addEventListener('devicemotion', function(event) {
                         var tempi = Math.abs(diff[names[i2]]);
                         if(chart_data.length<1000 && tempi < 0.15)
                             chart_data.push({x:chart_data.length,y:tempi});
+                        if(Math.abs(tempi - norm_gain)<norm_gain/2)
+                        {
+                            sum_gain[i2]+=tempi;
+                            sum_gain_count[i2]+=1;
+                        }
                     }
                     data_diff.push(diff);
                 }
 
             };
+        
+        for(var i2=0;i2<3;++i2)
+            sum_gain[i2]/=sum_gain_count[i2];
+
+
         document.querySelector('.line2').innerHTML="采集数据数量:"+data_diff.length;
         var norm_data_length=maxi*(maxi-1)/2;
         if(data_diff.length<norm_data_length/2)
             document.querySelector('.line2').innerHTML+="\n数据数量不足,建议持稳手机.";
 
 
-        var max_round_error=0.2*norm_gain;
+        var max_round_error=0.05*(sum_gain[0]+sum_gain[1]+sum_gain[2]);
         data_diff.forEach(function(diff){
 
-            diff2={alpha:Math.round(diff.alpha/norm_gain),
-                beta:Math.round(diff.beta/norm_gain),
-                gamma:Math.round(diff.gamma/norm_gain)
+            diff2={alpha:Math.round(diff.alpha/sum_gain[0]),
+                beta:Math.round(diff.beta/sum_gain[1]),
+                gamma:Math.round(diff.gamma/sum_gain[2])
             };
-            if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
-                Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
-                Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
+            if(Math.abs(diff2.alpha*sum_gain[0]-diff.alpha)<max_round_error &&
+                Math.abs(diff2.beta*sum_gain[1]-diff.beta)<max_round_error &&
+                Math.abs(diff2.gamma*sum_gain[2]-diff.gamma)<max_round_error)
             {
                 data_diff_2.push(diff);
                 data_diff_3.push(diff2);
             }
         });
         document.querySelector('.line3').innerHTML="有效数据数量: "+data_diff_2.length;
+        document.querySelector('.line3').innerHTML+="\nalpha增益: "+sum_gain[0];
+        document.querySelector('.line3').innerHTML+="\nbeta增益: "+sum_gain[1];
+        document.querySelector('.line3').innerHTML+="\ngamma增益: "+sum_gain[2];
         if(data_diff.length<data_diff.length/2)
             document.querySelector('.line3').innerHTML+="\n有效数据较少:增益可能估算有误.";
 
@@ -274,7 +290,7 @@ window.addEventListener('devicemotion', function(event) {
                 for(var i2=0;i2<3;++i2)
                 {
                     left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
-                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
+                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]];
                 }
         }
 
