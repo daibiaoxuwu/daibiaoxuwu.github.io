@@ -94,7 +94,7 @@ window.addEventListener('devicemotion', function(event) {
         collects++;
         centered.innerHTML="采集完毕,正在处理中";
         fade2(centered);
-        var norm_gain=0.07;
+        var norm_gain=4000/65536;
         var maxdiff=norm_gain*5;
         for(var i=0;i<maxi-1;++i)
             for(var j=i+1;j<maxi;++j)
