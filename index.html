@@ -99,32 +99,28 @@
                 return I;
             }
         </script>
-    <style type="text/css">
+                        <style type="text/css">
 .centered {
     margin: 20%;
     text-align: center;
-    white-space:pre;
 }
               .is-hidden {
                   display: none;
               }
-    </style>
+                        </style>
     </head>
                     <body>  
                         <div class="centered">
                             <h2>SensorID 论文复现</h2>
-                            <div class="line1">正在探测传感器标定增益...</div>
-                            <div class="output"></div>
-                            <div class="line2"></div>
-                            <div class="line3"></div>
-                            <div class="line4"></div>
-                        <canvas id="myChart" width="400" height="400"></canvas>
+                            <p class="line1">正在探测传感器标定增益...</p>
+                            <p class="output"></p>
+                            <p class="line2"></p>
+                            <p class="line3"></p>
                         </div>
 
 
 
-                        <!--                        <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script> -->
-                        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+                        <script src="//cdn.jsdelivr.net/npm/eruda"></script> <script>eruda.init();</script>
                         <script>
                             // fade out
 
@@ -150,17 +146,8 @@ function fade() {
         line1.style.opacity = val;
         requestAnimationFrame(fade);
     }
-};
-
-function flash() {
-    var val = parseFloat(line1.style.opacity);
-    if(isNaN(val))val=0;
-    if (!((val += .1) > 1)) {
-        line1.style.opacity = val;
-        requestAnimationFrame(fade);
-    }
     else
-        requestAnimationFrame(fade2);
+        val=1;
 };
 
 fade2(line1);
@@ -169,20 +156,15 @@ var output = document.querySelector('.output');
 var sens_list="";
 var data=[];
 var collects=0;
-var maxi=200;
+var maxi=300;
 var data_diff=[];
 var data_diff_2=[];
 var data_diff_3=[];
 var left_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 var right_matrix=[[0,0,0],[0,0,0],[0,0,0]];
 var result_matrix=[[0,0,0],[0,0,0],[0,0,0]];
-//var cal_matrix=[[1.06,0.1,0.05],[0.1,1.07,0.02],[0.05,0.02,1.08]]
-var cal_matrix=[[1,0,0],[0,1,0],[0,0,1]]
+var cal_matrix=[[1.06,0.1,0.05],[0.1,1.07,0.02],[0.05,0.02,1.08]]
 var names=['alpha','beta','gamma'];
-var chart_data=[];
-var min1=1;
-var min2=1;
-var min3=1;
 
 window.addEventListener('devicemotion', function(event) {
     if(collects<maxi){
@@ -201,7 +183,7 @@ window.addEventListener('devicemotion', function(event) {
             for(var i2=0;i2<3;++i2)
                 temp[names[i1]]+=event.rotationRate[names[i2]]*cal_matrix[i1][i2];
 
-        if(temp) data.push(temp)
+        data.push(temp)
 
         //data.push(event.rotationRate);
         collects++;
@@ -209,13 +191,13 @@ window.addEventListener('devicemotion', function(event) {
     else if(collects==maxi)
     {
         collects++;
-        line1.innerHTML="采集完毕,正在绘制图表...";
-        flash(line1);
-        //10494585
+        line1.innerHTML="采集完毕";
+        fade2(line1);
+
         var norm_gain=4002/65536;
-        var maxdiff=0.5;
-        for(var i=0;i<data.length-1;++i)
-            for(var j=i+1;j<data.length;++j)
+        var maxdiff=norm_gain*5;
+        for(var i=0;i<maxi-1;++i)
+            for(var j=i+1;j<maxi;++j)
             {
                 diff={
                     alpha: data[i].alpha - data[j].alpha,
@@ -224,48 +206,90 @@ window.addEventListener('devicemotion', function(event) {
                 }
 
                 if(
-                    Math.abs(diff.alpha)<maxdiff && Math.abs(diff.alpha)>0.05 &&
-                    Math.abs(diff.beta)<maxdiff &&  Math.abs(diff.beta)>0.05 &&
-                    Math.abs(diff.gamma)<maxdiff &&  Math.abs(diff.gamma)>0.05)
+                    Math.abs(diff.alpha)<maxdiff && diff.alpha!=0 &&
+                    Math.abs(diff.beta)<maxdiff && diff.beta!=0 &&
+                    Math.abs(diff.gamma)<maxdiff && diff.gamma!=0)
                 {
-                    for(var i2=0;i2<3;++i2)
-                    {
-                        var tempi = Math.abs(diff[names[i2]]);
-                        chart_data.push({x:chart_data.length,y:tempi});
-                        if(tempi<=min1){min2=min1;min1=tempi;}
-                        else if(tempi<=min1*1.5)min2=tempi;
-                        else if(tempi<min3) min3=tempi;
-                        data_diff.push(diff);
-                    }
+                    data_diff.push(diff);
                 }
 
             };
+        document.querySelector('.line2').innerHTML="\n采集数据数量:"+data_diff.length;
+        var max_round_error=0.2*norm_gain;
+        data_diff.forEach(function(diff){
 
+            diff2={alpha:Math.round(diff.alpha/norm_gain),
+                beta:Math.round(diff.beta/norm_gain),
+                gamma:Math.round(diff.gamma/norm_gain)
+            };
+            if(Math.abs(diff2.alpha*norm_gain-diff.alpha)<max_round_error &&
+                Math.abs(diff2.beta*norm_gain-diff.beta)<max_round_error &&
+                Math.abs(diff2.gamma*norm_gain-diff.gamma)<max_round_error)
+            {
+                data_diff_2.push(diff);
+                data_diff_3.push(diff2);
+            }
+        });
+        document.querySelector('.line3').innerHTML="\n有效数据数量: "+data_diff_2.length;
 
-        var ctx = document.getElementById('myChart').getContext('2d');
-    var scatterChart = new Chart(ctx, {
-    type: 'scatter',
-    data: {
-        datasets: [{
-            label: 'Scatter Dataset',
-            data: chart_data
-        }]
-    },
-    options: {
-        scales: {
-            xAxes: [{
-                type: 'linear',
-                position: 'bottom'
-            }]
+        for(var i=0; i<data_diff_2.length;++i)
+        {
+            for(var i1=0;i1<3;++i1)
+                for(var i2=0;i2<3;++i2)
+                {
+                    left_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_3[i][names[i2]];
+                    right_matrix[i1][i2]+=data_diff_3[i][names[i1]]*data_diff_2[i][names[i2]]/norm_gain;
+                }
         }
-    }
-});
-        line1.innerHTML="绘制完毕";
-        fade2(line1);
 
-        document.querySelector('.line2').innerHTML="最小分度:"+min1*Math.pow(2,33)+"deg/2^33s,"+min1*Math.pow(2,33)*Math.PI/180+"rad/2^33s";
-        document.querySelector('.line3').innerHTML="最小分度-校准:"+min2*Math.pow(2,33)+"deg/2^33s,"+min2*Math.pow(2,33)*Math.PI/180+"rad/2^33s";
-        document.querySelector('.line4').innerHTML="最小分度2x:"+min3*Math.pow(2,33)+"deg/2^33s,"+min3*Math.pow(2,33)*Math.PI/180+"rad/2^33s";
+        // Returns the inverse of matrix `M`.
+            left_matrix_inverse = matrix_invert(left_matrix);
+        console.log(left_matrix_inverse);
+        console.log(left_matrix);
+        console.log(right_matrix);
+
+        for(var i1=0;i1<3;++i1)
+            for(var i2=0;i2<3;++i2)
+                for(var i3=0;i3<3;++i3)
+                {
+                    result_matrix[i2][i1] += left_matrix_inverse[i1][i3]*right_matrix[i3][i2];
+                }
+
+
+
+
+        var body = document.getElementsByTagName("body")[0];
+
+        // creates a <table> element and a <tbody> element
+        var tbl = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+
+        // creating all cells
+        for (var i = 0; i < 3; i++) {
+            // creates a table row
+            var row = document.createElement("tr");
+
+            for (var j = 0; j < 3; j++) {
+                // Create a <td> element and a text node, make the text
+                // node the contents of the <td>, and put the <td> at
+                // the end of the table row
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode(result_matrix[i][j]*65536);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+            }
+
+            // add the row to the end of the table body
+            tblBody.appendChild(row);
+        }
+
+        // put the <tbody> in the <table>
+            tbl.appendChild(tblBody);
+        // appends <table> into <body>
+            body.appendChild(tbl);
+        // sets the border attribute of tbl to 2;
+        tbl.setAttribute("border", "2");
+
 
     }
 })
@@ -274,5 +298,5 @@ window.addEventListener('devicemotion', function(event) {
 
                         </script>
 
-                    </body>
+            </body>
 </html>
