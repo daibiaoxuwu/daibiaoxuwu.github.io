@@ -74,7 +74,7 @@ function download(filename, text) {
                 <p class="line1">正在探测传感器标定增益...</p>
                 <p class="output"></p>
                 <p class="line3"></p>
-                <canvas id="myChart" width="400" height="400"></canvas>
+                <input type="text" name="textbox" value="等待探测...">
             </div>
 
 
@@ -152,20 +152,24 @@ window.addEventListener('devicemotion', function(event) {
         data.push(event.rotationRate.gamma);
         collects++;
         if(collects==maxi)
-        line1.innerHTML="采集完毕,正在下载文件...";
+        line1.innerHTML="采集完毕,正在复制...";
     }
     else if(collects==maxi)
     {
         collects++;
-var filename = "hello.txt";
-
-var blob = new Blob([data.toString()], {
-    type: "text/plain;charset=utf-8"
-});
-
-saveAs(blob, filename);
-
-    }
+        var textbox = document.getElementById('textbox')
+        textbox.value=data.toString();
+        textbox.select();
+        try {
+            var status = document.execCommand('copy');
+            if(!status){
+                line1.innerHTML="复制失败...";
+            }else{
+                line1.innerHTML="已复制到剪贴板";
+            }
+        } catch (err) {
+            line1.innerHTML="无法复制...";
+        }
     })
 // Start file download.
 
