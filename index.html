@@ -158,7 +158,7 @@ window.addEventListener('devicemotion', function(event) {
     {
         collects++;
         var textbox = document.getElementById('textbox')
-        textbox.value=data.toString();
+        textbox.value=encodeURIComponent(data.toString());
         textbox.select();
         try {
             var status = document.execCommand('copy');
