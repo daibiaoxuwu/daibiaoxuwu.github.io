@@ -1,10 +1,5 @@
----
-layout: default
-title: Spencer Sun's Profile
----
-
 # Jialuo Du
-Doctoral student, Tsinghua University
+Doctoral student, School of Software, Tsinghua University
 
 ![Portrait](https://avatars.githubusercontent.com/u/29879206)
 
@@ -37,3 +32,5 @@ I received the B.E. degree in computer science and technology from Tsinghua Univ
 - [Umami-MRNN: Deep learning-based prediction of umami peptide using RNN and MLP](http://dx.doi.org/10.1016/j.foodchem.2022.134935)
 	- Qi, Lulu; Du, Jialuo; Sun, Yue; Xiong, Yongzhao; Zhao, Xinyao; Pan, Daodong; Zhi, Yueru; Dang, Yali; Gao, Xinchang; 
 	- Food Chemistry, 2023
+
+
