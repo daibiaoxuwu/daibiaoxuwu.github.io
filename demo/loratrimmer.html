@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoRaTrimmer Demo</title>
+  <meta name="description" content="Interactive demo of LoRaTrimmer (MobiCom 2024): decode one LoRa symbol step by step, standard LoRaPhy versus chirp trimming.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="../index.html">← Jialuo Du</a>
+    <h1>LoRaTrimmer, step by step</h1>
+    <p class="lede">One LoRa symbol, decoded two ways. Real LoRa chirps wrap from the top of the band back to the bottom partway through, and radios do not keep the carrier phase continuous across that <b>frequency jump</b>. Standard decoding adds the two halves of the symbol together and can lose energy to the phase jump; <b>LoRaTrimmer</b> trims each candidate symbol at its own jump point and adds the two halves' powers instead.</p>
+    <p class="lede" style="font-size:13px">Paper: <a href="https://dl.acm.org/doi/10.1145/3636534.3690681">MobiCom 2024</a> · decoders ported from the <a href="https://github.com/LoRaTrimmer/LoRaTrimmer">reference code</a> (BW 125 kHz, sampled at 1 MHz) · everything runs in your browser.</p>
+  </header>
+
+  <div class="controls" role="group" aria-label="Signal controls">
+    <label class="ctl">SF <select id="sf"><option>7</option><option>8</option><option>9</option></select></label>
+    <label class="ctl">Symbol <input id="code" type="number" min="0" step="1"></label>
+    <label class="ctl">Phase jump <input id="jump" type="range" min="0" max="180" step="5"><b id="jumpv"></b></label>
+    <label class="ctl" title="Per-sample SNR at the 1 MHz sample rate, as defined in the reference code">SNR <input id="snr" type="range" min="-35" max="0" step="0.5"><b id="snrv"></b></label>
+    <button class="btn" id="newnoise">New noise</button>
+    <button class="btn ghost" id="newsym">New symbol</button>
+  </div>
+
+  <section>
+    <h2>1 · The signal</h2>
+    <p class="sec-note">Spectrograms show frequency over time. Click a spectrogram to choose the short window shown in the zoomed panel; the raw waveform is too fast to read at full length.</p>
+    <div class="grid">
+      <div class="panel"><h3>Clean symbol</h3><p class="cap">A chirp starting at the symbol's frequency, jumping back to −62.5 kHz at t₀.</p><canvas id="specClean"></canvas></div>
+      <div class="panel"><h3>Received (with noise)</h3><p class="cap">The same symbol at the chosen SNR. Below about −10 dB it disappears into the noise.</p><canvas id="specNoisy"></canvas></div>
+      <div class="panel"><h3>Zoomed waveform <span class="kv" id="zoomv"></span></h3><p class="cap">In-phase part of 64 samples: clean (top) and received (bottom), each on its own scale.</p><canvas id="zoomClean" class="short"></canvas><canvas id="zoomNoisy" class="short"></canvas></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · Standard decoding <span class="tag base">LoRaPhy “Abs+” baseline</span></h2>
+    <p class="sec-note">Dechirp, take one long FFT, then fold the two copies of the peak together by adding their magnitudes.</p>
+    <div class="grid">
+      <div class="panel"><h3><span>Dechirp</span><span class="step">2a</span></h3><p class="cap">Multiplying by a downchirp turns the symbol into two tones: one before the jump, one a full bandwidth lower after it.</p><canvas id="dechirp"></canvas></div>
+      <div class="panel"><h3><span>Zero-padded FFT</span><span class="step">2b</span></h3><p class="cap">Two peaks, at f₀ and f₀ − 125 kHz. Their relative phase is the radio's random phase jump.</p><canvas id="fftfull"></canvas></div>
+      <div class="panel"><h3><span>Fold and pick</span><span class="step">2c</span></h3><p class="cap">|first half| + |second half| per symbol value; the highest wins. The FFT ran over the whole symbol, so each half also collects noise from the other.</p><canvas id="folded"></canvas><div class="verdict" id="vBase"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · LoRaTrimmer <span class="tag ours">ours</span></h2>
+    <p class="sec-note">Each candidate symbol value k has its own jump time t₀ = (1 − k/N)·T. LoRaTrimmer correlates the part before that time and the part after it separately (two triangular matrices, E1 and E2) and adds their <em>powers</em>, so the unknown phase jump can't cancel anything.</p>
+    <div class="grid">
+      <div class="panel"><h3><span>Trim at candidate <b id="candv"></b></span><span class="step">3a</span></h3><p class="cap">Drag to inspect any candidate. Blue = E1 window (before its jump), orange = E2 window (after).</p>
+        <label class="ctl" style="margin:0 0 6px">Candidate <input id="cand" type="range" min="0" step="1" style="flex:1"> <button class="btn ghost" id="toTrue" style="padding:2px 8px">true</button><button class="btn ghost" id="toBest" style="padding:2px 8px">best</button></label>
+        <canvas id="trim"></canvas><div class="kv" id="trimv"></div></div>
+      <div class="panel"><h3><span>Two partial correlations</span><span class="step">3b</span></h3><p class="cap">|E1·x|² and |E2·x|² for every candidate, stacked. At the true symbol both halves line up with the signal.</p><canvas id="parts"></canvas></div>
+      <div class="panel"><h3><span>Add powers and pick</span><span class="step">3c</span></h3><p class="cap">|E1·x|² + |E2·x|²; the highest wins. This is the optimal rule at low SNR when the phase jump is unknown (paper, Sec. 3.2).</p><canvas id="vals"></canvas><div class="verdict" id="vOurs"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>4 · Many symbols</h2>
+    <p class="sec-note">One symbol can go either way by luck. This runs fresh symbols (random value, random phase jump, fresh noise) through both decoders at each SNR, in a background thread.</p>
+    <div class="grid two">
+      <div class="panel">
+        <div class="trials"><button class="btn" id="runTrials">Run 200 symbols at this SNR</button><span class="kv" id="trialStatus"></span></div>
+        <div style="margin-top:12px; display:grid; gap:8px">
+          <div class="bar-row"><span>LoRaPhy (Abs+)</span><span class="bar"><i id="barBase" style="background:var(--c-base);width:0"></i></span><b id="accBase">–</b></div>
+          <div class="bar-row"><span>LoRaTrimmer</span><span class="bar"><i id="barOurs" style="background:var(--c-ours);width:0"></i></span><b id="accOurs">–</b></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="trials"><button class="btn ghost" id="runSweep">Sweep SNR</button><span class="kv" id="sweepStatus">Accuracy vs SNR at the current SF.</span></div>
+        <canvas id="sweep" class="short" style="margin-top:8px"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <footer>Signal model: an upchirp with independent carrier phases before and after its frequency jump, as in the paper's analysis. The LoRaPhy and LoRaTrimmer decoders reproduce the reference implementation exactly on test vectors (zero-padding 128× instead of 100×). Synthetic signals, not recorded data, so accuracies here are illustrative.</footer>
+</div>
+<script type="module" src="js/loratrimmer-ui.js"></script>
+</body>
+</html>
