@@ -72,6 +72,17 @@
       letter-spacing: -0.01em;
     }
     .role { color: var(--muted); margin: 0 0 18px; }
+    .job-market {
+      margin: 14px 0 18px;
+      padding: 12px 16px;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .job-market strong { display: block; font-size: 18px; }
+    .job-market span { font-size: 14px; }
+    .job-market a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
     .contact { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
     .contact a {
       display: inline-flex; align-items: center; gap: 7px;
@@ -176,6 +187,9 @@
     .paper.featured { grid-template-columns: 1fr; }
     .paper.featured .teaser { aspect-ratio: 960 / 420; }
 
+    /* card without a figure */
+    .paper.text-only { grid-template-columns: 1fr; }
+
     .hidden { display: none !important; }
 
     footer { border-top: 1px solid var(--line); padding: 20px 0 40px; font-size: 13px; color: var(--faint); }
@@ -213,6 +227,7 @@
       <img class="avatar" src="https://github.com/daibiaoxuwu.png" alt="Portrait of Jialuo Du" width="200" height="200">
       <div>
         <h1>Jialuo Du</h1>
+        <p class="job-market"><strong>On the 2027 academic job market</strong><span>Seeking tenure-track faculty positions · <a href="Jialuo_Du_CV.pdf">View CV</a></span></p>
         <p class="role">Research Associate · Department of Computer Science and Engineering · Michigan State University</p>
         <div class="contact">
           <a href="mailto:dujluo@gmail.com">
@@ -227,11 +242,15 @@
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
             GitHub
           </a>
+          <a href="Jialuo_Du_CV.pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+            CV
+          </a>
         </div>
         <div class="bio">
           <p>I am a Research Associate in the Department of Computer Science and Engineering at Michigan State University, advised by Dr. Zhichao Cao.</p>
           <p>I earned my Ph.D. in Software Engineering from Tsinghua University in 2025, where I was advised by Professor Yunhao Liu. I also received my Bachelor of Engineering in Computer Science and Technology from Tsinghua University in 2020.</p>
-          <p>My research focuses on the intersection of the Internet of Things and Artificial Intelligence.</p>
+          <p>My research focuses on the intersection of the Internet of Things and Artificial Intelligence. I build physics-informed intelligent signal processing for low-power wide-area networks: receivers that model what is known about the signal and use compact learning only for what cannot be modeled, so that weak and distorted LoRa signals can be recovered on commodity devices.</p>
         </div>
       </div>
     </header>
@@ -250,11 +269,11 @@
       <article class="paper featured" data-first>
         <div class="teaser"><video src="assets/dera-teaser.mp4" poster="assets/dera-teaser.webp" autoplay muted loop playsinline preload="metadata" aria-label="Animation: CFO rotates each preamble chirp's phase; compensating it lets energy add coherently so the weak packet peak rises above the noise"></video></div>
         <div>
-          <h4>DeRa: Deep-Range Low-Power Wide Area IoT via Ultra-sensitive Signal Detection</h4>
+          <h4><a href="https://doi.org/10.1145/3795866.3844157">DeRa: Deep-Range Low-Power Wide Area IoT via Ultra-sensitive Signal Detection</a></h4>
           <p class="authors"><b>Jialuo Du</b>, Jingkai Lin, Zhichao Cao</p>
-          <div class="venue"><span class="chip v">MobiCom 2026</span><span class="chip new">To appear</span><span class="venue-full">ACM International Conference on Mobile Computing and Networking</span></div>
+          <div class="venue"><span class="chip v">MobiCom 2026</span><span class="venue-full">ACM International Conference on Mobile Computing and Networking</span></div>
           <p class="tldr">Weak LoRa packets are lost at <em>detection</em>, before decoding even starts. Carrier frequency offset rotates the phase of every preamble chirp, so existing detectors add only magnitudes and waste signal power. DeRa models that phase evolution, compensates the CFO-induced timing, frequency and leakage distortions (up to 40&nbsp;kHz CFO), and accumulates the preamble coherently. On COTS devices across SF&nbsp;7–12 it lowers the detection threshold by 4.3–4.8&nbsp;dB and the decoding threshold by 3.3–3.9&nbsp;dB.</p>
-          <div class="links"><a class="watch" href="assets/dera-video.mp4" data-video="assets/dera-video.mp4" data-poster="assets/dera-video-poster.webp">▶ Video (1:30)</a><span class="soon">Paper and code coming soon</span></div>
+          <div class="links"><a class="watch" href="assets/dera-video.mp4" data-video="assets/dera-video.mp4" data-poster="assets/dera-video-poster.webp">▶ Video (1:30)</a><a href="https://doi.org/10.1145/3795866.3844157">Paper</a><a href="pdfs/dera-poster.pdf">Poster</a><span class="soon">Code coming soon</span></div>
         </div>
       </article>
 
@@ -292,11 +311,21 @@
       <article class="paper">
         <div class="teaser"><img src="assets/kairos-overview.webp" alt="Kairos system overview: gateway decides when to calibrate, node decides how" loading="lazy"></div>
         <div>
-          <h4>Kairos: Soil-Aware Transmission Control For Long-Term Agricultural Cross-Soil LoRa</h4>
+          <h4><a href="https://cse.msu.edu/~caozc/papers/icnp26-lin.pdf">Kairos: Soil-Aware Transmission Control For Long-Term Agricultural Cross-Soil LoRa</a></h4>
           <p class="authors">Jingkai Lin, Yidong Ren, <b>Jialuo Du</b>, Yimeng Liu, Yawen Wang, Younsuk Dong, Tianxing Li, Zhichao Cao</p>
-          <div class="venue"><span class="chip v">ICNP 2026</span><span class="chip new">To appear</span><span class="venue-full">IEEE International Conference on Network Protocols</span></div>
+          <div class="venue"><span class="chip v">ICNP 2026</span><span class="venue-full">IEEE International Conference on Network Protocols</span></div>
           <p class="tldr">LoRa antennas buried in farmland drift out of polarization alignment as soil moisture changes. Kairos predicts when recalibrating will actually save energy and then finds a good polarization state with few probes, cutting energy use by up to 3.71× in a real agricultural field.</p>
-          <div class="links"><span class="soon">Paper coming soon</span></div>
+          <div class="links"><a href="https://cse.msu.edu/~caozc/papers/icnp26-lin.pdf">PDF</a></div>
+        </div>
+      </article>
+
+      <article class="paper text-only" data-first>
+        <div>
+          <h4><a href="https://doi.org/10.1145/3812835.3814840">Scaling LoRa to Massive IoT: A Physical Layer Approach</a></h4>
+          <p class="authors"><b>Jialuo Du</b></p>
+          <div class="venue"><span class="chip v">MobiSys 2026 Rising Stars</span><span class="venue-full">ACM MobiSys 2026 Rising Stars Forum</span></div>
+          <p class="tldr">A research agenda for taking LoRa from today's deployments to billions of devices by removing its physical-layer bottlenecks: decoding weak signals at a single gateway, letting multiple gateways decode cooperatively, and overcoming collisions and environmental attenuation.</p>
+          <div class="links"><a href="https://doi.org/10.1145/3812835.3814840">Paper</a></div>
         </div>
       </article>
 
